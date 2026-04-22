@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DePubnager</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════ NEON VARIABLES ═══ */
+:root {
+  --bg:        #04060a;
+  --surf1:     #080c12;
+  --surf2:     #0d1219;
+  --surf3:     #121820;
+  --border:    #1a2535;
+  --border2:   #1f2e42;
+  --gold:      #00e5ff;
+  --gold2:     #40f0ff;
+  --gold-dim:  rgba(0,229,255,.09);
+  --gold-glow: rgba(0,229,255,.22);
+  --red:       #ff3c6e;
+  --red-dim:   rgba(255,60,110,.12);
+  --grn:       #00ffa3;
+  --grn-dim:   rgba(0,255,163,.10);
+  --blu:       #7b5cf5;
+  --blu-dim:   rgba(123,92,245,.13);
+  --pur:       #f059ff;
+  --pur-dim:   rgba(240,89,255,.12);
+  --txt:       #d6e8f8;
+  --txt2:      #6b8db2;
+  --txt3:      #324259;
+  --r:         10px;
+  --r2:        14px;
+  --shadow:    0 12px 40px rgba(0,0,0,.7);
+  --neon-c:    0 0 8px rgba(0,229,255,.5), 0 0 20px rgba(0,229,255,.2);
+  --neon-g:    0 0 8px rgba(0,255,163,.5), 0 0 20px rgba(0,255,163,.2);
+  --neon-p:    0 0 8px rgba(240,89,255,.5), 0 0 20px rgba(240,89,255,.2);
+  --neon-r:    0 0 8px rgba(255,60,110,.5), 0 0 20px rgba(255,60,110,.2);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Exo 2',sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  min-height:100vh;
+  display:flex;
+  overflow:hidden;
+  font-size:14px;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0,229,255,.03) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(123,92,245,.04) 0%, transparent 60%);
+}
+
+/* ═══════════════════ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,229,255,.25);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,229,255,.45)}
+
+/* ═══════════════════ LOGIN SCREEN ═══ */
+#loginScreen{
+  position:fixed;inset:0;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;
+  flex-direction:column;
+  gap:0;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 30% 20%, rgba(0,229,255,.05) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 75% 75%, rgba(123,92,245,.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 55% 50%, rgba(240,89,255,.03) 0%, transparent 60%);
+  animation:loginBgIn .8s ease;
+}
+@keyframes loginBgIn{from{opacity:0}to{opacity:1}}
+.login-box{
+  background:linear-gradient(145deg, rgba(13,18,25,.97), rgba(8,12,18,.99));
+  border:1px solid rgba(0,229,255,.18);
+  border-radius:22px;
+  padding:52px 48px;
+  width:420px;
+  box-shadow:0 40px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(0,229,255,.08), inset 0 1px 0 rgba(0,229,255,.1);
+  animation:loginBoxIn .6s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+  overflow:hidden;
+}
+.login-box::before{
+  content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,229,255,.6),transparent);
+}
+@keyframes loginBoxIn{from{transform:translateY(30px) scale(.96);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.login-logo{
+  font-family:'Rajdhani',sans-serif;
+  font-size:30px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold),var(--pur));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  text-align:center;
+  margin-bottom:6px;
+  letter-spacing:1px;
+  filter:drop-shadow(0 0 15px rgba(0,229,255,.3));
+}
+.login-sub{font-size:11px;color:var(--txt3);text-align:center;margin-bottom:38px;letter-spacing:3px;text-transform:uppercase;font-family:'Space Mono',monospace}
+.login-tabs{display:flex;gap:4px;background:rgba(0,0,0,.4);border-radius:10px;padding:4px;margin-bottom:28px;border:1px solid var(--border)}
+.login-tab{flex:1;padding:9px;border-radius:7px;border:none;background:none;color:var(--txt2);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.login-tab.active{background:linear-gradient(135deg,var(--gold),rgba(0,229,255,.7));color:#030810;box-shadow:var(--neon-c)}
+.l-group{margin-bottom:18px}
+.l-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--txt3);margin-bottom:8px;display:block;font-family:'Space Mono',monospace}
+.l-input{
+  width:100%;padding:12px 16px;
+  background:rgba(0,0,0,.5);border:1px solid var(--border2);
+  border-radius:9px;color:var(--txt);font-family:'Exo 2',sans-serif;font-size:14px;
+  outline:none;transition:all .25s;
+}
+.l-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(0,229,255,.1),var(--neon-c)}
+.l-btn{
+  width:100%;padding:14px;margin-top:8px;
+  background:linear-gradient(135deg,var(--gold),rgba(0,200,255,.8));
+  color:#030810;
+  border:none;border-radius:9px;
+  font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;
+  cursor:pointer;transition:all .25s;
+  letter-spacing:2px;text-transform:uppercase;
+  box-shadow:var(--neon-c);
+}
+.l-btn:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(0,229,255,.6),0 0 40px rgba(0,229,255,.3)}
+.l-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;min-height:18px;font-family:'Space Mono',monospace}
+
+/* ═══════════════════ SIDEBAR ═══ */
+.sidebar{
+  width:228px;flex-shrink:0;
+  background:linear-gradient(180deg,var(--surf1),var(--bg));
+  border-right:1px solid rgba(0,229,255,.1);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  position:relative;z-index:10;
+}
+.sidebar::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:1px;
+  background:linear-gradient(180deg,rgba(0,229,255,.2),rgba(123,92,245,.15),transparent);
+  pointer-events:none;
+}
+.s-logo{
+  padding:24px 20px 18px;
+  border-bottom:1px solid rgba(0,229,255,.08);
+}
+.s-logo-text{
+  font-family:'Rajdhani',sans-serif;
+  font-size:22px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold),var(--pur));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;letter-spacing:1px;
+  filter:drop-shadow(0 0 8px rgba(0,229,255,.3));
+}
+.s-logo-sub{font-size:9px;color:var(--txt3);letter-spacing:3px;text-transform:uppercase;font-family:'Space Mono',monospace}
+.s-realtime{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 20px;
+  background:rgba(0,255,163,.06);
+  border-bottom:1px solid rgba(0,255,163,.1);
+  font-size:10px;color:var(--grn);font-weight:600;
+  font-family:'Space Mono',monospace;letter-spacing:.5px;
+}
+.pulse{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--grn);
+  box-shadow:var(--neon-g);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 6px rgba(0,255,163,.6)}50%{opacity:.5;transform:scale(.8);box-shadow:none}}
+
+.nav-sec{padding:14px 10px 6px}
+.nav-sec-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--txt3);padding:0 10px;margin-bottom:8px;font-family:'Space Mono',monospace}
+.nav-btn{
+  display:flex;align-items:center;gap:10px;
+  width:100%;padding:10px 10px;border-radius:9px;
+  background:none;border:none;color:var(--txt2);
+  font-family:'Exo 2',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .2s;text-align:left;
+  position:relative;letter-spacing:.3px;
+}
+.nav-btn:hover{background:rgba(0,229,255,.06);color:var(--txt)}
+.nav-btn.active{background:rgba(0,229,255,.1);color:var(--gold);font-weight:600}
+.nav-btn.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:linear-gradient(180deg,var(--gold),rgba(0,229,255,.4));border-radius:2px;box-shadow:var(--neon-c)}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;
+  background:rgba(255,60,110,.2);color:var(--red);
+  font-size:10px;font-weight:700;
+  border-radius:10px;padding:1px 6px;
+  border:1px solid rgba(255,60,110,.3);
+  animation:badgePop .3s ease;
+  font-family:'Space Mono',monospace;
+}
+@keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+.s-footer{
+  margin-top:auto;
+  padding:14px 10px;
+  border-top:1px solid rgba(0,229,255,.08);
+}
+.s-user{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:10px;
+  background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.1);
+  cursor:pointer;transition:all .2s;
+}
+.s-user:hover{background:rgba(0,229,255,.09);border-color:rgba(0,229,255,.2)}
+.s-avatar{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#030810;
+  background:linear-gradient(135deg,var(--gold),rgba(0,200,255,.8));
+  flex-shrink:0;box-shadow:var(--neon-c);
+  font-family:'Rajdhani',sans-serif;
+}
+.s-uname{font-size:13px;font-weight:600;letter-spacing:.3px}
+.s-urole{font-size:10px;color:var(--txt3);font-family:'Space Mono',monospace}
+
+/* ═══════════════════ MAIN ═══ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  height:58px;flex-shrink:0;
+  background:rgba(8,12,18,.95);
+  border-bottom:1px solid rgba(0,229,255,.1);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 26px;gap:12px;
+  position:relative;z-index:5;
+  backdrop-filter:blur(12px);
+}
+.topbar::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,229,255,.3),rgba(123,92,245,.2),transparent);
+  pointer-events:none;
+}
+.page-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:20px;font-weight:700;
+  color:var(--txt);letter-spacing:1px;
+}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-clock{
+  font-size:12px;color:var(--gold);
+  font-family:'Space Mono',monospace;
+  background:rgba(0,229,255,.07);
+  padding:6px 12px;border-radius:7px;
+  border:1px solid rgba(0,229,255,.15);
+  text-shadow:var(--neon-c);
+}
+.tb-notif{
+  position:relative;
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,229,255,.07);border-radius:9px;cursor:pointer;
+  font-size:16px;border:1px solid rgba(0,229,255,.15);
+  transition:all .2s;
+}
+.tb-notif:hover{border-color:var(--gold);box-shadow:var(--neon-c)}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:var(--neon-r)}
+
+/* ═══════════════════ CONTENT ═══ */
+.content{flex:1;overflow-y:auto;padding:24px}
+.page{display:none;animation:pageIn .35s cubic-bezier(.22,1,.36,1)}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════ BUTTONS ═══ */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:8px;
+  font-family:'Exo 2',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;
+  white-space:nowrap;letter-spacing:.4px;
+}
+.btn-gold{background:linear-gradient(135deg,var(--gold),rgba(0,200,255,.8));color:#030810;box-shadow:0 0 10px rgba(0,229,255,.3)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 0 18px rgba(0,229,255,.5),0 4px 12px rgba(0,0,0,.4)}
+.btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--border2)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);box-shadow:0 0 8px rgba(0,229,255,.15)}
+.btn-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,60,110,.25)}
+.btn-red:hover{background:var(--red);color:#fff;box-shadow:var(--neon-r)}
+.btn-grn{background:var(--grn-dim);color:var(--grn);border:1px solid rgba(0,255,163,.25)}
+.btn-grn:hover{background:var(--grn);color:#030810;box-shadow:var(--neon-g)}
+.btn-grn:hover{background:var(--grn);color:#fff}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ═══════════════════ CARDS ═══ */
+.card{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.card-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+.card-title{font-size:13px;font-weight:700;color:var(--txt)}
+.card-body{padding:18px}
+
+/* ═══════════════════ STATS ═══ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{
+  background:var(--surf2);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;position:relative;overflow:hidden;
+  transition:border-color .2s;cursor:default;
+}
+.stat:hover{border-color:var(--border2)}
+.stat::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+}
+.stat.gold::after{background:var(--gold)}
+.stat.grn::after{background:var(--grn)}
+.stat.red::after{background:var(--red)}
+.stat.blu::after{background:var(--blu)}
+.stat-ico{font-size:22px;margin-bottom:10px}
+.stat-val{
+  font-family:'Syne',sans-serif;
+  font-size:26px;font-weight:800;line-height:1;
+  color:var(--txt);
+}
+.stat-lbl{font-size:11px;color:var(--txt3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.stat-delta{margin-top:8px;font-size:11px;font-weight:600;color:var(--grn)}
+.stat-delta.neg{color:var(--red)}
+
+/* ═══════════════════ BADGE ═══ */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:600}
+.badge-gold{background:var(--gold-dim);color:var(--gold)}
+.badge-grn{background:var(--grn-dim);color:var(--grn)}
+.badge-red{background:var(--red-dim);color:var(--red)}
+.badge-blu{background:var(--blu-dim);color:var(--blu)}
+.badge-pur{background:var(--pur-dim);color:var(--pur)}
+.badge-gray{background:rgba(78,98,120,.2);color:var(--txt2)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ═══════════════════ TABLE ═══ */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{
+  text-align:left;padding:10px 14px;
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--txt3);border-bottom:1px solid var(--border);
+  background:var(--surf1);
+}
+td{padding:12px 14px;font-size:13px;border-bottom:1px solid rgba(37,45,56,.7);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(240,160,48,.03)}
+
+/* ═══════════════════ TABLE MAP ═══ */
+#tableCanvas{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+  padding:4px;
+  min-height:300px;
+}
+.t-item{
+  border-radius:12px;
+  border:2px solid var(--border2);
+  background:var(--surf2);
+  padding:14px 10px;
+  display:flex;flex-direction:column;
+  align-items:center;gap:5px;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+  user-select:none;
+  min-height:90px;
+}
+.t-item:hover{border-color:var(--gold);transform:scale(1.03);z-index:2}
+.t-item.occupied{border-color:var(--gold);background:rgba(240,160,48,.08)}
+.t-item.reserved{border-color:var(--blu);background:var(--blu-dim)}
+.t-item.cleaning{border-color:var(--red);background:var(--red-dim)}
+.t-item.dragging{opacity:.4;transform:scale(.95)}
+.t-item.drag-over{border-color:var(--gold2);border-style:dashed;transform:scale(1.05)}
+.t-num{
+  font-family:'Syne',sans-serif;
+  font-size:20px;font-weight:800;color:var(--txt2);
+}
+.t-item.occupied .t-num{color:var(--gold)}
+.t-item.reserved .t-num{color:var(--blu)}
+.t-item.cleaning .t-num{color:var(--red)}
+.t-status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--txt3)}
+.t-item.occupied .t-status{color:var(--gold)}
+.t-item.reserved .t-status{color:var(--blu)}
+.t-item.cleaning .t-status{color:var(--red)}
+.t-time{font-size:10px;color:var(--txt3);margin-top:2px}
+.t-guests{
+  position:absolute;top:7px;right:8px;
+  font-size:10px;color:var(--txt3);
+  display:flex;align-items:center;gap:3px;
+}
+.t-amount{
+  font-size:11px;font-weight:700;color:var(--gold);
+  margin-top:2px;
+}
+.t-drag-handle{
+  position:absolute;top:5px;left:7px;
+  font-size:11px;color:var(--txt3);cursor:grab;opacity:.5;
+}
+
+/* ═══════════════════ ORDER PANEL ═══ */
+.order-layout{display:grid;grid-template-columns:1fr 320px;gap:18px;height:calc(100vh - 130px)}
+.menu-side{overflow-y:auto;padding-right:4px}
+.order-side{overflow-y:auto}
+
+.cat-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.cat-tab{
+  padding:6px 13px;border-radius:20px;
+  border:1px solid var(--border2);background:transparent;
+  color:var(--txt2);font-family:inherit;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .15s;
+}
+.cat-tab.active,.cat-tab:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.m-item{
+  background:var(--surf2);border:1px solid var(--border);
+  border-radius:var(--r);padding:12px;cursor:pointer;
+  transition:all .2s;position:relative;
+}
+.m-item:hover{border-color:var(--gold);background:var(--gold-dim);transform:translateY(-2px)}
+.m-item.out-of-stock{opacity:.4;cursor:not-allowed;pointer-events:none}
+.m-item.out-of-stock::after{content:'HẾT';position:absolute;top:8px;right:8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px}
+.m-emoji{font-size:26px;margin-bottom:7px;display:block}
+.m-name{font-size:12.5px;font-weight:600;line-height:1.3;margin-bottom:4px}
+.m-price{font-size:12px;font-weight:700;color:var(--gold)}
+.m-stock{font-size:10px;color:var(--txt3);margin-top:3px}
+.m-cat{font-size:10px;color:var(--txt3);margin-top:2px}
+
+/* cart */
+.cart-card{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r2);position:sticky;top:0}
+.cart-hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cart-table-sel{
+  background:var(--surf1);border:1px solid var(--border2);
+  border-radius:6px;color:var(--gold);font-family:inherit;
+  font-size:12px;font-weight:700;padding:4px 10px;outline:none;cursor:pointer;
+}
+.cart-scroll{max-height:38vh;overflow-y:auto;padding:8px 4px}
+.ci{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:8px;
+  transition:background .15s;
+}
+.ci:hover{background:var(--surf3)}
+.ci-emoji{font-size:17px;flex-shrink:0}
+.ci-name{
+  flex:1;font-size:12.5px;font-weight:500;
+  cursor:pointer;
+}
+.ci-name:hover{color:var(--gold)}
+.ci-qty-wrap{display:flex;align-items:center;gap:5px}
+.ci-qty-inp{
+  width:32px;text-align:center;
+  background:var(--surf1);border:1px solid var(--border2);
+  border-radius:5px;color:var(--txt);font-family:inherit;font-size:13px;font-weight:700;
+  padding:3px 4px;outline:none;
+}
+.ci-qty-inp:focus{border-color:var(--gold)}
+.qbtn{
+  width:22px;height:22px;border-radius:5px;
+  background:var(--surf3);border:none;color:var(--txt);
+  cursor:pointer;font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.qbtn:hover{background:var(--gold);color:var(--bg)}
+.ci-price{font-size:12px;font-weight:700;color:var(--gold);min-width:65px;text-align:right}
+.ci-del{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:14px;padding:0 2px}
+.ci-del:hover{color:var(--red)}
+
+.cart-foot{padding:14px 16px;border-top:1px solid var(--border)}
+.cf-row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--txt2);margin-bottom:5px}
+.cf-row.total{font-size:15px;font-weight:700;color:var(--txt);margin-top:8px;padding-top:8px;border-top:1px solid var(--gold)}
+.cf-row.total span:last-child{color:var(--gold)}
+.cart-actions{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:12px}
+
+/* ═══════════════════ INLINE EDIT ═══ */
+.editable{
+  cursor:pointer;border-bottom:1px dashed transparent;
+  transition:border-color .15s;
+}
+.editable:hover{border-bottom-color:var(--gold)}
+.inline-edit-inp{
+  background:var(--surf1);border:1px solid var(--gold);
+  border-radius:5px;color:var(--txt);font-family:inherit;
+  padding:2px 6px;outline:none;font-size:inherit;font-weight:inherit;
+  width:auto;min-width:60px;
+}
+
+/* ═══════════════════ INVENTORY ═══ */
+.inv-bar-wrap{width:90px;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden}
+.inv-bar{height:100%;border-radius:3px;transition:width .5s ease}
+.inv-bar.hi{background:var(--grn)}
+.inv-bar.md{background:var(--gold)}
+.inv-bar.lo{background:var(--red)}
+
+/* ═══════════════════ RECOMMENDATION ═══ */
+.rec-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.rec-chip{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:20px;
+  background:var(--pur-dim);border:1px solid rgba(168,85,247,.3);
+  color:var(--pur);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .15s;
+}
+.rec-chip:hover{background:var(--pur);color:#fff}
+
+/* ═══════════════════ CHART ═══ */
+.chart-wrap{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.bar-fill{
+  width:100%;border-radius:4px 4px 0 0;
+  background:var(--gold);opacity:.7;
+  transition:height .5s ease,opacity .2s;cursor:pointer;
+}
+.bar-fill:hover{opacity:1}
+.bar-fill.today{background:var(--gold2);opacity:1}
+.bar-lbl{font-size:10px;color:var(--txt3)}
+
+/* ═══════════════════ MODAL ═══ */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);
+  display:none;align-items:center;justify-content:center;
+  z-index:500;backdrop-filter:blur(4px);
+}
+.modal-ov.open{display:flex}
+.modal{
+  background:var(--surf2);border:1px solid var(--border2);
+  border-radius:18px;width:500px;max-height:92vh;overflow-y:auto;
+  animation:slideUp .25s ease;box-shadow:var(--shadow);
+}
+@keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:800;
+}
+.modal-x{background:none;border:none;color:var(--txt2);font-size:20px;cursor:pointer;line-height:1}
+.modal-x:hover{color:var(--txt)}
+.modal-body{padding:24px}
+.modal-ft{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+/* ═══════════════════ FORM ═══ */
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.fg{margin-bottom:14px}
+.fl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--txt3);margin-bottom:5px;display:block}
+.fi{
+  width:100%;padding:10px 13px;
+  background:var(--surf1);border:1px solid var(--border2);
+  border-radius:8px;color:var(--txt);font-family:inherit;font-size:13.5px;
+  outline:none;transition:border-color .2s;
+}
+.fi:focus{border-color:var(--gold)}
+
+/* ═══════════════════ TOAST ═══ */
+#toasts{
+  position:fixed;top:18px;right:18px;z-index:9998;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+}
+.toast{
+  background:var(--surf2);border:1px solid var(--border2);
+  border-radius:10px;padding:11px 16px;
+  font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:var(--shadow);
+  animation:toastIn .3s ease;pointer-events:all;
+  max-width:300px;
+}
+@keyframes toastIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.s{border-left:3px solid var(--grn)}
+.toast.e{border-left:3px solid var(--red)}
+.toast.i{border-left:3px solid var(--gold)}
+.toast.w{border-left:3px solid var(--pur)}
+
+/* ═══════════════════ TABLE POPUP ═══ */
+.t-popup{
+  position:fixed;inset:0;z-index:400;
+  display:none;align-items:flex-start;justify-content:flex-end;
+}
+.t-popup.open{display:flex}
+.t-popup-backdrop{position:absolute;inset:0}
+.t-popup-panel{
+  position:relative;z-index:1;
+  width:420px;height:100vh;
+  background:var(--surf2);
+  border-left:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  animation:slideRight .25s ease;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+}
+@keyframes slideRight{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+.tp-hd{
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.tp-body{flex:1;overflow-y:auto;padding:16px 20px}
+.tp-ft{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0}
+
+/* ═══════════════════ SEARCH ═══ */
+.searchbar{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surf2);border:1px solid var(--border);
+  border-radius:8px;padding:8px 13px;
+}
+.searchbar input{
+  background:none;border:none;outline:none;
+  color:var(--txt);font-family:inherit;font-size:13px;flex:1;
+}
+
+/* ═══════════════════ SECTION HEADER ═══ */
+.sec-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.sec-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
+
+/* ═══════════════════ ACTIVITY ═══ */
+.act-item{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid rgba(37,45,56,.6)}
+.act-item:last-child{border-bottom:none}
+.act-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.act-txt{font-size:12.5px;line-height:1.4}
+.act-time{font-size:11px;color:var(--txt3);margin-top:2px}
+
+/* ═══════════════════ RESERVATION ═══ */
+.res-timeline{display:flex;flex-direction:column;gap:10px}
+.res-card{
+  background:var(--surf3);border:1px solid var(--border2);
+  border-radius:10px;padding:13px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-left:3px solid transparent;
+}
+.res-card.confirmed{border-left-color:var(--grn)}
+.res-card.pending{border-left-color:var(--gold)}
+.res-card.cancelled{border-left-color:var(--red);opacity:.6}
+.res-info-name{font-size:14px;font-weight:700}
+.res-info-detail{font-size:12px;color:var(--txt2);margin-top:3px}
+
+/* ═══════════════════ BILL PRINT ═══ */
+@media print{
+  body>*:not(#printBill){display:none}
+  #printBill{display:block!important;position:fixed;inset:0}
+}
+#printBill{display:none;padding:20px;font-size:13px;color:#000;background:#fff}
+.print-title{text-align:center;font-size:22px;font-weight:900;margin-bottom:4px}
+.print-sub{text-align:center;color:#666;font-size:12px;margin-bottom:16px}
+.print-hr{border:1px dashed #000;margin:12px 0}
+.print-row{display:flex;justify-content:space-between;margin-bottom:4px}
+.print-total{font-size:16px;font-weight:900;border-top:2px solid #000;padding-top:6px;margin-top:6px}
+
+/* ═══════════════════ DRAG TOOLTIP ═══ */
+.drag-tip{
+  font-size:11px;color:var(--txt3);text-align:center;
+  padding:8px;margin-bottom:12px;
+  background:var(--surf3);border-radius:8px;
+  border:1px dashed var(--border2);
+}
+
+/* ═══════════════════ GRID 2 ═══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
+
+/* ═══════════════════ ROLE BADGE ═══ */
+.role-admin{background:var(--gold-dim);color:var(--gold);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700}
+.role-staff{background:var(--blu-dim);color:var(--blu);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ LOGIN ════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🍺 DePubnager</div>
+    <div class="login-sub">Hệ thống quản lý thông minh</div>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="setRole(this,'admin')">👑 Admin</button>
+      <button class="login-tab" onclick="setRole(this,'staff')">🧑‍🍳 Nhân viên</button>
+    </div>
+    <div class="l-group">
+      <label class="l-label">Tên đăng nhập</label>
+      <input class="l-input" id="loginUser" placeholder="admin hoặc staff1" value="admin">
+    </div>
+    <div class="l-group">
+      <label class="l-label">Mật khẩu</label>
+      <input class="l-input" type="password" id="loginPass" placeholder="••••••" value="123456" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="l-btn" onclick="doLogin()">Đăng nhập →</button>
+    <div class="l-err" id="loginErr"></div>
+  </div>
+  <div style="margin-top:18px;font-size:12px;color:var(--txt3)">Demo: admin/123456 hoặc staff1/123456</div>
+</div>
+
+<!-- ════════════════════ APP SHELL ════════ -->
+<aside class="sidebar" id="appSidebar" style="display:none">
+  <div class="s-logo">
+    <span class="s-logo-text">🍺 DePubnager</span>
+    <span class="s-logo-sub">Pro Dashboard</span>
+  </div>
+  <div class="s-realtime"><div class="pulse"></div><span id="rtStatus">Realtime • Đang kết nối...</span></div>
+
+  <div class="nav-sec">
+    <div class="nav-sec-label">Tổng quan</div>
+    <button class="nav-btn active" onclick="go('dashboard')"><span class="nav-icon">📊</span>Dashboard</button>
+    <button class="nav-btn" onclick="go('tables')"><span class="nav-icon">🪑</span>Sơ đồ bàn<span class="nav-badge" id="nb-occ">0</span></button>
+    <button class="nav-btn" onclick="go('orders')"><span class="nav-icon">🧾</span>Gọi món</button>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-sec-label">Quản lý</div>
+    <button class="nav-btn" onclick="go('menu')"><span class="nav-icon">🍽️</span>Thực đơn</button>
+    <button class="nav-btn" onclick="go('inventory')"><span class="nav-icon">📦</span>Kho<span class="nav-badge" id="nb-inv" style="display:none">!</span></button>
+    <button class="nav-btn" onclick="go('reservations')"><span class="nav-icon">📅</span>Đặt bàn<span class="nav-badge" id="nb-res">0</span></button>
+  </div>
+  <div class="nav-sec" id="adminNav">
+    <div class="nav-sec-label">Tài chính</div>
+    <button class="nav-btn" onclick="go('revenue')"><span class="nav-icon">💰</span>Doanh thu</button>
+    <button class="nav-btn" onclick="go('bills')"><span class="nav-icon">🧮</span>Hóa đơn</button>
+    <button class="nav-btn" onclick="go('staff')"><span class="nav-icon">👥</span>Nhân viên</button>
+  </div>
+
+  <div class="s-footer">
+    <div class="s-user" onclick="logout()">
+      <div class="s-avatar" id="sAvatar">A</div>
+      <div>
+        <div class="s-uname" id="sUname">Admin</div>
+        <div class="s-urole" id="sUrole">Quản lý</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="main" id="appMain" style="display:none">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard</div>
+    <div class="tb-right">
+      <div class="tb-clock" id="clock">--:--:--</div>
+      <div class="tb-notif" onclick="showToast('3 đặt bàn mới cần xác nhận','w')">🔔<div class="notif-dot"></div></div>
+      <button class="btn btn-ghost btn-sm" onclick="go('orders')">+ Order mới</button>
+      <button class="btn btn-gold btn-sm" onclick="openModal('resModal')">📅 Đặt bàn</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ══════ DASHBOARD ══════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat gold">
+          <div class="stat-ico">💰</div>
+          <div class="stat-val" id="d-revenue">8.4tr</div>
+          <div class="stat-lbl">Doanh thu hôm nay</div>
+          <div class="stat-delta">▲ +12% vs hôm qua</div>
+        </div>
+        <div class="stat grn">
+          <div class="stat-ico">🪑</div>
+          <div class="stat-val" id="d-tables">0/20</div>
+          <div class="stat-lbl">Bàn đang hoạt động</div>
+          <div class="stat-delta" id="d-table-pct">0% công suất</div>
+        </div>
+        <div class="stat red">
+          <div class="stat-ico">🧾</div>
+          <div class="stat-val" id="d-orders">47</div>
+          <div class="stat-lbl">Order hôm nay</div>
+          <div class="stat-delta">▲ +8 so hôm qua</div>
+        </div>
+        <div class="stat blu">
+          <div class="stat-ico">👥</div>
+          <div class="stat-val">6</div>
+          <div class="stat-lbl">Nhân viên đang ca</div>
+          <div class="stat-delta" style="color:var(--txt3)">Ca tối 18–23h</div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-hd"><div class="card-title">📈 Doanh thu 7 ngày</div></div>
+          <div class="card-body">
+            <div class="chart-wrap" id="revenueChart"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:10px">
+              <span style="font-size:12px;color:var(--txt3)">Tổng tuần:</span>
+              <span style="font-size:14px;font-weight:700;color:var(--gold)">49.6 triệu ₫</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">⚡ Hoạt động gần đây</div></div>
+          <div class="card-body" style="padding:10px 16px" id="activityFeed"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><div class="card-title">🏆 Top món bán chạy hôm nay</div></div>
+        <div class="table-wrap">
+          <table id="topMenuTable">
+            <thead><tr><th>#</th><th>Món</th><th>Số lượng</th><th>Doanh thu</th><th>Trạng thái</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ BÀN ══════ -->
+    <div class="page" id="page-tables">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+        <div style="display:flex;gap:14px;flex:1;flex-wrap:wrap">
+          <span style="font-size:12px;color:var(--txt2);display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:var(--surf2);border:1px solid var(--border2);display:inline-block"></span>Trống</span>
+          <span style="font-size:12px;color:var(--gold);display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:var(--gold-dim);border:1px solid var(--gold);display:inline-block"></span>Đang dùng</span>
+          <span style="font-size:12px;color:var(--blu);display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:var(--blu-dim);border:1px solid var(--blu);display:inline-block"></span>Đã đặt</span>
+          <span style="font-size:12px;color:var(--red);display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:var(--red-dim);border:1px solid var(--red);display:inline-block"></span>Đang dọn</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('addTableModal')">+ Thêm bàn</button>
+      </div>
+      <div class="drag-tip">💡 <b>Click</b> để mở order · <b>Double-click</b> đổi trạng thái · <b>Kéo thả</b> để sắp xếp lại bàn</div>
+      <div id="tableCanvas"></div>
+    </div>
+
+    <!-- ══════ GỌI MÓN ══════ -->
+    <div class="page" id="page-orders">
+      <div class="order-layout">
+        <div class="menu-side">
+          <div style="display:flex;gap:10px;margin-bottom:14px">
+            <div class="searchbar" style="flex:1"><span>🔍</span><input id="menuSearch" oninput="renderMenuGrid()" placeholder="Tìm món..."></div>
+          </div>
+          <div class="cat-tabs" id="catTabs"></div>
+          <div class="menu-grid" id="menuGrid"></div>
+
+          <!-- Recommendation -->
+          <div class="card" style="margin-top:16px">
+            <div class="card-hd">
+              <div class="card-title">✨ Gợi ý thêm món</div>
+              <span style="font-size:11px;color:var(--pur)">AI Powered</span>
+            </div>
+            <div class="card-body" style="padding:10px 16px">
+              <div style="font-size:12px;color:var(--txt2)">Dựa trên món đã chọn & combo phổ biến:</div>
+              <div class="rec-chips" id="recChips"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CART -->
+        <div class="order-side">
+          <div class="cart-card">
+            <div class="cart-hd">
+              <div style="font-size:13px;font-weight:700">🧾 Order</div>
+              <select class="cart-table-sel" id="cartTableSel" onchange="updateCartLabel()"></select>
+            </div>
+            <div class="cart-scroll" id="cartItems">
+              <div style="text-align:center;padding:28px 0;color:var(--txt3);font-size:13px">Chọn món để bắt đầu</div>
+            </div>
+            <div class="cart-foot" id="cartFoot" style="display:none">
+              <div class="cf-row"><span>Tạm tính</span><span id="cf-sub">0₫</span></div>
+              <div class="cf-row"><span>VAT (10%)</span><span id="cf-vat">0₫</span></div>
+              <div class="cf-row"><span>Giảm giá</span><span style="color:var(--grn)" id="cf-disc">0₫</span></div>
+              <div class="cf-row total"><span>Tổng cộng</span><span id="cf-total">0₫</span></div>
+              <div class="cart-actions">
+                <button class="btn btn-ghost btn-sm" onclick="clearCart()">🗑️ Xoá</button>
+                <button class="btn btn-gold btn-sm" onclick="confirmOrder()">✅ Gửi bếp</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active orders -->
+          <div class="card" style="margin-top:12px">
+            <div class="card-hd"><div class="card-title">⏳ Đang chờ (Bếp)</div></div>
+            <div id="kitchenQueue" style="padding:4px 0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ THỰC ĐƠN ══════ -->
+    <div class="page" id="page-menu">
+      <div class="sec-hd">
+        <div class="searchbar" style="width:280px"><span>🔍</span><input placeholder="Tìm món..."></div>
+        <button class="btn btn-gold" onclick="openModal('addMenuModal')">+ Thêm món</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Món</th><th>Danh mục</th><th>Giá bán</th><th>Giá vốn</th><th>Tồn kho</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="menuManageTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ KHO ══════ -->
+    <div class="page" id="page-inventory">
+      <div class="sec-hd">
+        <div class="g3" style="flex:1;margin-bottom:0">
+          <div class="stat grn" style="padding:14px"><div class="stat-ico" style="font-size:16px;margin-bottom:5px">✅</div><div class="stat-val" style="font-size:20px" id="inv-ok">0</div><div class="stat-lbl">Đủ hàng</div></div>
+          <div class="stat gold" style="padding:14px"><div class="stat-ico" style="font-size:16px;margin-bottom:5px">⚠️</div><div class="stat-val" style="font-size:20px" id="inv-low">0</div><div class="stat-lbl">Sắp hết</div></div>
+          <div class="stat red" style="padding:14px"><div class="stat-ico" style="font-size:16px;margin-bottom:5px">❌</div><div class="stat-val" style="font-size:20px" id="inv-out">0</div><div class="stat-lbl">Hết hàng</div></div>
+        </div>
+        <button class="btn btn-gold" style="align-self:center;margin-left:12px" onclick="openModal('addInvModal')">+ Nhập kho</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nguyên liệu</th><th>Đơn vị</th><th>Tồn kho</th><th>Tối thiểu</th><th>Tình trạng</th><th>Thao tác</th></tr></thead>
+            <tbody id="invTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ ĐẶT BÀN ══════ -->
+    <div class="page" id="page-reservations">
+      <div class="sec-hd">
+        <div class="searchbar" style="width:280px"><span>🔍</span><input placeholder="Tên, SĐT..."></div>
+        <button class="btn btn-gold" onclick="openModal('resModal')">+ Đặt bàn mới</button>
+      </div>
+      <div class="res-timeline" id="resTimeline"></div>
+    </div>
+
+    <!-- ══════ DOANH THU ══════ -->
+    <div class="page" id="page-revenue">
+      <div class="stats-row">
+        <div class="stat gold"><div class="stat-ico">📅</div><div class="stat-val" id="rev-today">0₫</div><div class="stat-lbl">Hôm nay</div></div>
+        <div class="stat grn"><div class="stat-ico">📆</div><div class="stat-val" id="rev-week">0₫</div><div class="stat-lbl">7 ngày gần nhất</div></div>
+        <div class="stat blu"><div class="stat-ico">🗓️</div><div class="stat-val" id="rev-month">0₫</div><div class="stat-lbl">30 ngày gần nhất</div></div>
+        <div class="stat red"><div class="stat-ico">📊</div><div class="stat-val" id="rev-alltime">0₫</div><div class="stat-lbl">Tổng tích lũy</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-hd"><div class="card-title">💹 Theo tháng</div></div>
+          <div class="card-body">
+            <div class="chart-wrap">
+              <div class="bar-col"><div class="bar-fill" style="height:72%"></div><div class="bar-lbl">T1</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:65%"></div><div class="bar-lbl">T2</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:80%"></div><div class="bar-lbl">T3</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:68%"></div><div class="bar-lbl">T4</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:90%"></div><div class="bar-lbl">T5</div></div>
+              <div class="bar-col"><div class="bar-fill today" style="height:100%"></div><div class="bar-lbl" style="color:var(--gold)">T6</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:85%"></div><div class="bar-lbl">T7</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:78%"></div><div class="bar-lbl">T8</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:88%"></div><div class="bar-lbl">T9</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:92%"></div><div class="bar-lbl">T10</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:95%"></div><div class="bar-lbl">T11</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:87%"></div><div class="bar-lbl">T12</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">🥧 Cơ cấu danh mục</div></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span>🍺 Bia & Đồ uống</span><span style="color:var(--gold);font-weight:700">42%</span></div><div class="inv-bar-wrap" style="width:100%"><div class="inv-bar hi" style="width:42%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span>🔥 Nướng</span><span style="color:var(--gold);font-weight:700">31%</span></div><div class="inv-bar-wrap" style="width:100%"><div class="inv-bar hi" style="width:31%;background:var(--blu)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span>🍲 Lẩu</span><span style="color:var(--gold);font-weight:700">18%</span></div><div class="inv-bar-wrap" style="width:100%"><div class="inv-bar md" style="width:18%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span>🥜 Snack & Khác</span><span style="color:var(--gold);font-weight:700">9%</span></div><div class="inv-bar-wrap" style="width:100%"><div class="inv-bar lo" style="width:9%"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- LỊCH SỬ DOANH THU THEO NGÀY -->
+      <div class="card" style="margin-top:0">
+        <div class="card-hd">
+          <div class="card-title">📋 Lịch sử doanh thu theo ngày</div>
+          <button class="btn btn-ghost btn-sm" onclick="renderRevenueHistory()">🔄 Làm mới</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ngày</th><th>Doanh thu</th><th>Số hoá đơn</th><th>Trung bình/HĐ</th></tr></thead>
+            <tbody id="revenueHistoryTable"></tbody>
+          </table>
+        </div>
+        <div id="revenueHistoryEmpty" style="display:none;text-align:center;padding:24px;color:var(--txt3);font-size:13px">
+          Chưa có dữ liệu lịch sử. Doanh thu sẽ được tổng kết tự động mỗi khi sang ngày mới.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ HÓA ĐƠN ══════ -->
+    <div class="page" id="page-bills">
+      <div class="sec-hd">
+        <div style="display:flex;gap:8px">
+          <div class="searchbar" style="width:240px"><span>🔍</span><input placeholder="Mã HĐ, bàn..."></div>
+          <select class="fi" style="width:120px"><option>Hôm nay</option><option>Tuần này</option><option>Tháng này</option></select>
+        </div>
+        <button class="btn btn-ghost">📥 Xuất Excel</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Mã HĐ</th><th>Bàn</th><th>Giờ vào</th><th>Tổng tiền</th><th>Thanh toán</th><th>NV</th><th>Trạng thái</th><th>In</th></tr></thead>
+            <tbody id="billsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ NHÂN VIÊN ══════ -->
+    <div class="page" id="page-staff">
+      <div class="sec-hd">
+        <div class="searchbar" style="width:280px"><span>🔍</span><input placeholder="Tìm nhân viên..."></div>
+        <button class="btn btn-gold" onclick="openModal('addStaffModal')">+ Thêm nhân viên</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nhân viên</th><th>Chức vụ</th><th>Ca làm</th><th>Quyền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+            <tbody id="staffTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ════ TABLE POPUP PANEL ════ -->
+<div class="t-popup" id="tablePopup">
+  <div class="t-popup-backdrop" onclick="closeTablePopup()"></div>
+  <div class="t-popup-panel">
+    <div class="tp-hd">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800" id="tp-title">Bàn 1</div>
+        <div style="font-size:12px;color:var(--txt2)" id="tp-status-lbl">Trống</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select class="fi" style="width:100px;padding:6px 10px;font-size:12px" id="tp-status-sel" onchange="changeTableStatus()">
+          <option value="free">Trống</option>
+          <option value="occupied">Đang dùng</option>
+          <option value="reserved">Đặt trước</option>
+          <option value="cleaning">Đang dọn</option>
+        </select>
+        <button onclick="closeTablePopup()" class="btn btn-ghost btn-sm">✕</button>
+      </div>
+    </div>
+    <div class="tp-body">
+      <div id="tp-order-section">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--txt3);margin-bottom:10px">Danh sách món</div>
+        <div id="tp-items"></div>
+
+        <!-- Quick add in popup -->
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;font-weight:700;color:var(--txt3);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Thêm nhanh</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="tp-quick-add"></div>
+        </div>
+
+        <div style="margin-top:14px;padding:12px;background:var(--surf3);border-radius:8px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--txt2);margin-bottom:4px"><span>Tạm tính:</span><span id="tp-subtotal">0₫</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;color:var(--gold)"><span>Tổng cộng:</span><span id="tp-total">0₫</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="tp-ft" style="display:flex;gap:8px">
+      <button class="btn btn-ghost" style="flex:1" onclick="clearTableOrder()">🗑️ Xoá order</button>
+      <button class="btn btn-grn btn-sm" style="flex:1" onclick="checkoutTable()">💳 Thanh toán</button>
+      <button class="btn btn-gold" style="flex:1" onclick="closeTablePopup();go('orders')">+ Gọi thêm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODALS ════ -->
+<!-- Reservation -->
+<div class="modal-ov" id="resModal">
+  <div class="modal">
+    <div class="modal-hd">📅 Đặt bàn mới<button class="modal-x" onclick="closeModal('resModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fg"><label class="fl">Họ tên</label><input class="fi" id="res-name" placeholder="Nguyễn Văn A"></div>
+        <div class="fg"><label class="fl">Số điện thoại</label><input class="fi" id="res-phone" placeholder="0901234567"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Ngày</label><input class="fi" id="res-date" type="date"></div>
+        <div class="fg"><label class="fl">Giờ đến</label><input class="fi" id="res-time" type="time" value="19:00"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Số người</label><input class="fi" id="res-guests" type="number" value="4" min="1"></div>
+        <div class="fg"><label class="fl">Chọn bàn</label><select class="fi" id="res-table"></select></div>
+      </div>
+      <div class="fg"><label class="fl">Ghi chú</label><input class="fi" id="res-note" placeholder="Yêu cầu đặc biệt..."></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeModal('resModal')">Hủy</button>
+      <button class="btn btn-gold" onclick="addReservation()">Xác nhận đặt bàn</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Menu -->
+<div class="modal-ov" id="addMenuModal">
+  <div class="modal">
+    <div class="modal-hd">🍽️ Thêm món mới<button class="modal-x" onclick="closeModal('addMenuModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fg"><label class="fl">Emoji</label><input class="fi" id="nm-emoji" value="🍽️" maxlength="4"></div>
+        <div class="fg"><label class="fl">Tên món</label><input class="fi" id="nm-name" placeholder="Gà nướng sa tế"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Danh mục</label>
+          <select class="fi" id="nm-cat">
+            <option value="bia">🍺 Bia & Đồ uống</option>
+            <option value="nuong">🔥 Nướng</option>
+            <option value="lau">🍲 Lẩu</option>
+            <option value="snack">🥜 Snack</option>
+            <option value="khac">🥗 Khác</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Đơn vị</label><input class="fi" id="nm-unit" placeholder="Đĩa / Lon / Chai"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Giá bán (₫)</label><input class="fi" id="nm-price" type="number" placeholder="80000"></div>
+        <div class="fg"><label class="fl">Giá vốn (₫)</label><input class="fi" id="nm-cost" type="number" placeholder="35000"></div>
+      </div>
+      <div class="fg"><label class="fl">Số lượng tồn kho</label><input class="fi" id="nm-stock" type="number" placeholder="100"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeModal('addMenuModal')">Hủy</button>
+      <button class="btn btn-gold" onclick="addMenuItem()">Thêm món</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Inventory -->
+<div class="modal-ov" id="addInvModal">
+  <div class="modal">
+    <div class="modal-hd">📦 Nhập kho<button class="modal-x" onclick="closeModal('addInvModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label class="fl">Tên nguyên liệu</label><input class="fi" id="inv-name" placeholder="Bia Hà Nội"></div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Đơn vị</label><input class="fi" id="inv-unit" placeholder="Thùng / Kg / Lít"></div>
+        <div class="fg"><label class="fl">Số lượng</label><input class="fi" id="inv-qty" type="number" placeholder="50"></div>
+      </div>
+      <div class="fg"><label class="fl">Mức tối thiểu</label><input class="fi" id="inv-min" type="number" placeholder="10"></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeModal('addInvModal')">Hủy</button>
+      <button class="btn btn-gold" onclick="addInventoryItem()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Staff -->
+<div class="modal-ov" id="addStaffModal">
+  <div class="modal">
+    <div class="modal-hd">👤 Thêm nhân viên<button class="modal-x" onclick="closeModal('addStaffModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fg"><label class="fl">Họ tên</label><input class="fi" id="st-name" placeholder="Nguyễn Thị Lan"></div>
+        <div class="fg"><label class="fl">SĐT</label><input class="fi" id="st-phone" placeholder="0912345678"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Chức vụ</label>
+          <select class="fi" id="st-role">
+            <option>Phục vụ</option><option>Thu ngân</option><option>Bếp</option><option>Bảo vệ</option><option>Quản lý</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Ca làm</label>
+          <select class="fi" id="st-shift">
+            <option>Sáng 8:00–14:00</option><option>Chiều 14:00–20:00</option><option>Tối 18:00–23:00</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label class="fl">Quyền hạn</label>
+          <select class="fi" id="st-perm">
+            <option value="staff">Nhân viên</option><option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Lương (₫/tháng)</label><input class="fi" id="st-salary" type="number" placeholder="6000000"></div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeModal('addStaffModal')">Hủy</button>
+      <button class="btn btn-gold" onclick="addStaff()">Thêm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Table -->
+<div class="modal-ov" id="addTableModal">
+  <div class="modal">
+    <div class="modal-hd">🪑 Thêm bàn<button class="modal-x" onclick="closeModal('addTableModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="frow">
+        <div class="fg"><label class="fl">Số bàn</label><input class="fi" id="tb-num" type="number" placeholder="21"></div>
+        <div class="fg"><label class="fl">Sức chứa</label><input class="fi" id="tb-cap" type="number" placeholder="6"></div>
+      </div>
+      <div class="fg"><label class="fl">Khu vực</label>
+        <select class="fi" id="tb-zone"><option>Trong nhà</option><option>Ngoài trời</option><option>VIP</option></select>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeModal('addTableModal')">Hủy</button>
+      <button class="btn btn-gold" onclick="addTable()">Thêm bàn</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toasts"></div>
+
+<!-- PRINT BILL -->
+<div id="printBill"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA STORE
+═══════════════════════════════════════════════════════ */
+let STATE = {
+  currentUser: null,
+  tables: [
+    {id:1,status:'occupied',guests:4,checkin:'17:30',order:[{id:1,qty:4},{id:5,qty:1}],zone:'indoor'},
+    {id:2,status:'free',guests:0,checkin:null,order:[],zone:'indoor'},
+    {id:3,status:'occupied',guests:6,checkin:'18:00',order:[{id:1,qty:6},{id:6,qty:2},{id:11,qty:2}],zone:'indoor'},
+    {id:4,status:'free',guests:0,checkin:null,order:[],zone:'indoor'},
+    {id:5,status:'reserved',guests:8,checkin:null,order:[],zone:'indoor'},
+    {id:6,status:'occupied',guests:3,checkin:'17:45',order:[{id:2,qty:3},{id:7,qty:1}],zone:'indoor'},
+    {id:7,status:'cleaning',guests:0,checkin:null,order:[],zone:'indoor'},
+    {id:8,status:'free',guests:0,checkin:null,order:[],zone:'indoor'},
+    {id:9,status:'occupied',guests:5,checkin:'18:15',order:[{id:1,qty:5},{id:5,qty:2}],zone:'indoor'},
+    {id:10,status:'free',guests:0,checkin:null,order:[],zone:'indoor'},
+    {id:11,status:'reserved',guests:4,checkin:null,order:[],zone:'indoor'},
+    {id:12,status:'free',guests:0,checkin:null,order:[],zone:'indoor'},
+    {id:13,status:'occupied',guests:2,checkin:'18:30',order:[{id:3,qty:2},{id:11,qty:2}],zone:'outdoor'},
+    {id:14,status:'free',guests:0,checkin:null,order:[],zone:'outdoor'},
+    {id:15,status:'free',guests:0,checkin:null,order:[],zone:'outdoor'},
+  ],
+  menu: [
+    {id:1,emoji:'🍺',name:'Bia Hà Nội lon',cat:'bia',price:15000,cost:8000,unit:'Lon',stock:200,sold:148},
+    {id:2,emoji:'🍻',name:'Bia Tiger chai',cat:'bia',price:25000,cost:13000,unit:'Chai',stock:80,sold:42},
+    {id:3,emoji:'🥤',name:'Nước ngọt Coca',cat:'bia',price:15000,cost:7000,unit:'Lon',stock:60,sold:35},
+    {id:4,emoji:'💧',name:'Nước suối',cat:'bia',price:8000,cost:3000,unit:'Chai',stock:50,sold:25},
+    {id:5,emoji:'🦐',name:'Tôm nướng muối ớt',cat:'nuong',price:30000,cost:14000,unit:'Đĩa',stock:15,sold:43},
+    {id:6,emoji:'🥩',name:'Sườn nướng BBQ',cat:'nuong',price:30000,cost:15000,unit:'Đĩa',stock:18,sold:38},
+    {id:7,emoji:'🐟',name:'Mực nướng sa tế',cat:'nuong',price:30000,cost:16000,unit:'Đĩa',stock:5,sold:25},
+    {id:8,emoji:'🍗',name:'Gà nướng lá chanh',cat:'nuong',price:30000,cost:13000,unit:'Đĩa',stock:20,sold:30},
+    {id:9,emoji:'🍲',name:'Lẩu thái hải sản',cat:'lau',price:200000,cost:90000,unit:'Nồi',stock:8,sold:12},
+    {id:10,emoji:'🫕',name:'Lẩu bò nhúng dấm',cat:'lau',price:180000,cost:85000,unit:'Nồi',stock:6,sold:10},
+    {id:11,emoji:'🥜',name:'Lạc rang muối',cat:'snack',price:10000,cost:4000,unit:'Đĩa',stock:40,sold:62},
+    {id:12,emoji:'🌽',name:'Bắp bung',cat:'snack',price:12000,cost:5000,unit:'Đĩa',stock:30,sold:28},
+    {id:13,emoji:'🥗',name:'Rau sống',cat:'khac',price:15000,cost:5000,unit:'Đĩa',stock:25,sold:20},
+    {id:14,emoji:'🍳',name:'Cơm chiên DX',cat:'khac',price:35000,cost:15000,unit:'Phần',stock:0,sold:15},
+  ],
+  inventory: [
+    {name:'Bia Hà Nội',unit:'Thùng',qty:20,min:30,max:100},
+    {name:'Bia Tiger',unit:'Thùng',qty:45,min:20,max:80},
+    {name:'Tôm tươi',unit:'Kg',qty:8,min:5,max:30},
+    {name:'Thịt heo',unit:'Kg',qty:25,min:10,max:50},
+    {name:'Mực ống',unit:'Kg',qty:3,min:5,max:20},
+    {name:'Gà nguyên con',unit:'Con',qty:12,min:5,max:30},
+    {name:'Rau các loại',unit:'Kg',qty:15,min:5,max:30},
+    {name:'Dầu ăn',unit:'Lít',qty:0,min:5,max:20},
+    {name:'Nước mắm',unit:'Chai',qty:18,min:5,max:30},
+    {name:'Than nướng',unit:'Bao',qty:6,min:3,max:15},
+  ],
+  reservations: [
+    {id:1,name:'Nguyễn Văn A',phone:'0901111111',table:5,guests:8,date:'hôm nay',time:'18:30',note:'Sinh nhật',status:'confirmed'},
+    {id:2,name:'Trần Thị B',phone:'0902222222',table:11,guests:4,date:'hôm nay',time:'19:00',note:'',status:'pending'},
+    {id:3,name:'Lê Văn C',phone:'0903333333',table:11,guests:6,date:'mai',time:'20:00',note:'Họp lớp',status:'confirmed'},
+  ],
+  staff: [
+    {id:1,name:'Nguyễn Thị Lan',role:'Phục vụ',shift:'Tối 18–23h',phone:'0901234567',perm:'staff',status:'on'},
+    {id:2,name:'Trần Văn Hùng',role:'Phục vụ',shift:'Chiều 14–20h',phone:'0912345678',perm:'staff',status:'on'},
+    {id:3,name:'Lê Thị Nam',role:'Thu ngân',shift:'Tối 18–23h',phone:'0923456789',perm:'staff',status:'on'},
+    {id:4,name:'Phạm Văn Minh',role:'Bếp trưởng',shift:'Chiều 14–22h',phone:'0934567890',perm:'staff',status:'on'},
+    {id:5,name:'Admin Quán',role:'Quản lý',shift:'Cả ngày',phone:'0900000000',perm:'admin',status:'on'},
+  ],
+  bills: [
+    {id:'#841',table:'Bàn 2',checkin:'17:30',total:420000,pay:'Tiền mặt',staff:'Lan',status:'paid'},
+    {id:'#842',table:'Bàn 6',checkin:'17:45',total:285000,pay:'CK',staff:'Hùng',status:'paid'},
+    {id:'#843',table:'Bàn 11',checkin:'18:00',total:680000,pay:'Tiền mặt',staff:'Lan',status:'paid'},
+  ],
+  cart: [],
+  activeCartTable: null,
+  activeTablePopup: null,
+  catFilter: 'all',
+};
+
+const ACCOUNTS = {admin:{pass:'123456',role:'admin'},staff1:{pass:'123456',role:'staff'}};
+const catNames = {all:'Tất cả',bia:'🍺 Bia & ĐU',nuong:'🔥 Nướng',lau:'🍲 Lẩu',snack:'🥜 Snack',khac:'🥗 Khác'};
+
+/* ═══════════════════════════════════════════════════════
+   PERSISTENCE — localStorage
+═══════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'quannhau_state_v2';
+const HISTORY_KEY = 'quannhau_revenue_history';
+
+// Các field không cần lưu (session only)
+const SKIP_FIELDS = ['currentUser','activeCartTable','activeTablePopup','catFilter'];
+
+function saveState() {
+  try {
+    const toSave = {};
+    Object.keys(STATE).forEach(k => {
+      if (!SKIP_FIELDS.includes(k)) toSave[k] = STATE[k];
+    });
+    toSave._savedAt = new Date().toISOString();
+    toSave._savedDate = todayStr();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  } catch(e) { console.warn('Save failed:', e); }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    // Nếu dữ liệu từ ngày khác → tổng kết rồi reset các trường session
+    if (saved._savedDate && saved._savedDate !== todayStr()) {
+      rolloverDay(saved);
+      return true;
+    }
+    // Cùng ngày → restore bình thường
+    Object.keys(saved).forEach(k => {
+      if (!SKIP_FIELDS.includes(k) && !k.startsWith('_') && STATE.hasOwnProperty(k)) {
+        STATE[k] = saved[k];
+      }
+    });
+    return true;
+  } catch(e) { console.warn('Load failed:', e); return false; }
+}
+
+function todayStr() {
+  return new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+}
+
+function rolloverDay(savedState) {
+  // Tính tổng doanh thu ngày hôm qua từ bills
+  const bills = savedState.bills || [];
+  const paidBills = bills.filter(b => b.status === 'paid');
+  const totalRevenue = paidBills.reduce((s, b) => s + (b.total || 0), 0);
+  const orderCount = paidBills.length;
+  const date = savedState._savedDate || 'N/A';
+
+  // Lưu vào lịch sử doanh thu
+  const history = getRevenueHistory();
+  const existing = history.find(h => h.date === date);
+  if (!existing) {
+    history.unshift({ date, revenue: totalRevenue, orders: orderCount, bills: paidBills.length });
+    if (history.length > 90) history.pop(); // giữ 90 ngày gần nhất
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }
+
+  // Restore dữ liệu ổn định (menu, staff, kho, bàn) nhưng reset bills ngày mới
+  const stableFields = ['tables','menu','inventory','staff','reservations'];
+  stableFields.forEach(k => {
+    if (savedState[k]) STATE[k] = savedState[k];
+  });
+
+  // Reset bàn về trạng thái sạch
+  STATE.tables.forEach(t => { t.status='free'; t.guests=0; t.checkin=null; t.order=[]; });
+
+  // Bills ngày mới bắt đầu rỗng, giữ 3 bill cuối từ hôm qua để tham khảo
+  const lastBills = paidBills.slice(0, 3).map(b => ({...b, note:'(Hôm qua)'}));
+  STATE.bills = lastBills;
+
+  // Thông báo sau khi login
+  STATE._rolloverMsg = {
+    date, revenue: totalRevenue, orders: orderCount
+  };
+
+  // Lưu lại state mới (ngày mới)
+  saveState();
+  showToast(`🌅 Ngày mới! Doanh thu hôm qua: ${totalRevenue.toLocaleString('vi-VN')}₫`, 's');
+}
+
+function getRevenueHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  } catch(e) { return []; }
+}
+
+// Auto-save mỗi 30 giây và khi có thay đổi quan trọng
+function autoSave() {
+  setInterval(saveState, 30000);
+  window.addEventListener('beforeunload', saveState);
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') saveState();
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   REALTIME (BroadcastChannel)
+═══════════════════════════════════════════════════════ */
+let bc;
+try {
+  bc = new BroadcastChannel('quan-nhau-pro');
+  bc.onmessage = (e) => {
+    const {type, data} = e.data;
+    if (type === 'TABLE_UPDATE') { STATE.tables = data; renderTableMap(); updateDashboardStats(); updateSidebarBadges(); }
+    if (type === 'ORDER_UPDATE') { STATE.cart = data.cart; STATE.activeCartTable = data.table; renderCart(); }
+    if (type === 'INVENTORY_UPDATE') { STATE.inventory = data; renderInventory(); updateSidebarBadges(); }
+    if (type === 'MENU_UPDATE') { STATE.menu = data; renderMenuGrid(); renderMenuManageTable(); }
+    showToast('🔄 Dữ liệu được cập nhật từ tab khác', 'i');
+  };
+  document.getElementById('rtStatus').textContent = 'Realtime • Đang hoạt động';
+} catch(e) { document.getElementById('rtStatus').textContent = 'Realtime • (Tab đơn)'; }
+
+function broadcast(type, data) {
+  try { bc && bc.postMessage({type, data}); } catch(e){}
+}
+
+/* ═══════════════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════════════ */
+let loginRole = 'admin';
+function setRole(btn, role) {
+  loginRole = role;
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('loginUser').value = role === 'admin' ? 'admin' : 'staff1';
+}
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const acc = ACCOUNTS[u];
+  if (!acc || acc.pass !== p) { document.getElementById('loginErr').textContent = 'Sai tài khoản hoặc mật khẩu'; return; }
+  STATE.currentUser = {name: u === 'admin' ? 'Admin Quán' : u, role: acc.role};
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appSidebar').style.display = 'flex';
+  document.getElementById('appMain').style.display = 'flex';
+  document.getElementById('sUname').textContent = STATE.currentUser.name;
+  document.getElementById('sUrole').textContent = acc.role === 'admin' ? 'Quản lý' : 'Nhân viên';
+  document.getElementById('sAvatar').textContent = STATE.currentUser.name[0].toUpperCase();
+  if (acc.role !== 'admin') document.getElementById('adminNav').style.display = 'none';
+  initApp();
+}
+
+function logout() {
+  if (confirm('Đăng xuất?')) { location.reload(); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════ */
+const pageTitles = {dashboard:'Dashboard',tables:'Sơ đồ bàn',orders:'Gọi món',menu:'Thực đơn',inventory:'Kho nguyên liệu',reservations:'Đặt bàn',revenue:'Doanh thu',bills:'Hóa đơn',staff:'Nhân viên'};
+
+function go(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[name] || name;
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') === `go('${name}')`) b.classList.add('active');
+  });
+  // lazy renders
+  if (name === 'tables') renderTableMap();
+  if (name === 'orders') { renderMenuGrid(); renderCartTableOptions(); renderCart(); renderKitchenQueue(); }
+  if (name === 'menu') renderMenuManageTable();
+  if (name === 'inventory') renderInventory();
+  if (name === 'reservations') renderReservations();
+  if (name === 'revenue') renderRevenuePage();
+  if (name === 'bills') renderBills();
+  if (name === 'staff') renderStaff();
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+function initApp() {
+  // Load dữ liệu đã lưu (nếu có)
+  loadState();
+  autoSave();
+
+  setInterval(updateClock, 1000);
+  updateClock();
+  renderDashboard();
+  renderTableMap();
+  renderMenuGrid();
+  renderCartTableOptions();
+  updateSidebarBadges();
+  updateDashboardStats();
+  initCatTabs();
+  // Set today date default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('res-date').value = today;
+
+  // Hiện thông báo tổng kết ngày hôm qua nếu vừa rollover
+  if (STATE._rolloverMsg) {
+    const m = STATE._rolloverMsg;
+    setTimeout(() => {
+      showToast(`📊 Tổng kết ${m.date}: ${m.revenue.toLocaleString('vi-VN')}₫ / ${m.orders} hoá đơn`, 's');
+    }, 1500);
+    delete STATE._rolloverMsg;
+  }
+}
+
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('vi-VN');
+}
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+function fmt(n) { return n.toLocaleString('vi-VN') + '₫'; }
+function menuById(id) { return STATE.menu.find(m => m.id === id); }
+function tableById(id) { return STATE.tables.find(t => t.id === id); }
+
+function getTableTotal(table) {
+  return table.order.reduce((s, i) => {
+    const m = menuById(i.id);
+    return s + (m ? m.price * i.qty : 0);
+  }, 0);
+}
+
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════════════ */
+function renderDashboard() {
+  // Chart
+  const days = ['T2','T3','T4','T5','T6','T7','CN'];
+  const vals = [55,70,48,82,91,100,60];
+  document.getElementById('revenueChart').innerHTML = days.map((d,i) =>
+    `<div class="bar-col">
+      <div class="bar-fill${i===5?' today':''}" style="height:${vals[i]}%" title="${vals[i]*0.1}tr"></div>
+      <div class="bar-lbl" ${i===5?'style="color:var(--gold)"':''}>${d}</div>
+    </div>`).join('');
+
+  // Activity feed
+  const activities = [
+    {ico:'🧾',bg:'var(--gold-dim)',txt:'Order #847 – Bàn 5 – 320,000₫',time:'2 phút trước'},
+    {ico:'💳',bg:'var(--grn-dim)',txt:'Thanh toán bàn 12 – 540,000₫',time:'8 phút trước'},
+    {ico:'📅',bg:'var(--blu-dim)',txt:'Đặt bàn mới – 8 người lúc 19:30',time:'15 phút trước'},
+    {ico:'⚠️',bg:'var(--red-dim)',txt:'Cảnh báo kho: Bia Hà Nội còn thấp',time:'32 phút trước'},
+    {ico:'🧾',bg:'var(--gold-dim)',txt:'Order #846 – Bàn 3 – 180,000₫',time:'41 phút trước'},
+  ];
+  document.getElementById('activityFeed').innerHTML = activities.map(a =>
+    `<div class="act-item">
+      <div class="act-ico" style="background:${a.bg}">${a.ico}</div>
+      <div><div class="act-txt">${a.txt}</div><div class="act-time">${a.time}</div></div>
+    </div>`).join('');
+
+  // Top menu
+  const sorted = [...STATE.menu].sort((a,b) => b.sold - a.sold).slice(0,5);
+  document.getElementById('topMenuTable').querySelector('tbody').innerHTML = sorted.map((m,i) =>
+    `<tr>
+      <td><b style="color:${i===0?'var(--gold)':'var(--txt2)'}">${i+1}</b></td>
+      <td>${m.emoji} ${m.name}</td>
+      <td>${m.sold} ${m.unit}</td>
+      <td style="font-weight:700;color:var(--gold)">${fmt(m.price * m.sold)}</td>
+      <td><span class="badge ${m.stock > 0 ? 'badge-grn' : 'badge-red'}"><span class="dot"></span>${m.stock > 0 ? 'Còn hàng' : 'Hết hàng'}</span></td>
+    </tr>`).join('');
+}
+
+function updateDashboardStats() {
+  const occ = STATE.tables.filter(t => t.status === 'occupied').length;
+  document.getElementById('d-tables').textContent = `${occ}/${STATE.tables.length}`;
+  document.getElementById('d-table-pct').textContent = `▲ ${Math.round(occ/STATE.tables.length*100)}% công suất`;
+  document.getElementById('nb-occ').textContent = occ;
+  // Update revenue stat on dashboard
+  const todayRevenue = STATE.bills.filter(b => b.status === 'paid').reduce((s,b) => s + (b.total||0), 0);
+  const el = document.getElementById('d-revenue');
+  if (el) el.textContent = todayRevenue >= 1000000 ? (todayRevenue/1000000).toFixed(1)+'tr' : (todayRevenue/1000).toFixed(0)+'k';
+}
+
+/* ═══════════════════════════════════════════════════════
+   REVENUE HISTORY
+═══════════════════════════════════════════════════════ */
+function renderRevenuePage() {
+  const history = getRevenueHistory();
+  const todayRevenue = STATE.bills.filter(b=>b.status==='paid').reduce((s,b)=>s+(b.total||0),0);
+  const todayOrders  = STATE.bills.filter(b=>b.status==='paid').length;
+
+  // Stats: hôm nay từ bills hiện tại + history
+  const allEntries = [{date:todayStr(), revenue:todayRevenue, orders:todayOrders}, ...history];
+  const week  = allEntries.slice(0, 7).reduce((s,h)=>s+h.revenue,0);
+  const month = allEntries.slice(0,30).reduce((s,h)=>s+h.revenue,0);
+  const all   = allEntries.reduce((s,h)=>s+h.revenue,0);
+
+  const fmtShort = n => n >= 1000000000 ? (n/1000000000).toFixed(1)+'tỷ'
+                      : n >= 1000000 ? (n/1000000).toFixed(1)+'tr'
+                      : (n/1000).toFixed(0)+'k';
+
+  const setEl = (id, v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+  setEl('rev-today',  fmtShort(todayRevenue));
+  setEl('rev-week',   fmtShort(week));
+  setEl('rev-month',  fmtShort(month));
+  setEl('rev-alltime',fmtShort(all));
+
+  renderRevenueHistory();
+}
+
+function renderRevenueHistory() {
+  const history = getRevenueHistory();
+  const todayRevenue = STATE.bills.filter(b=>b.status==='paid').reduce((s,b)=>s+(b.total||0),0);
+  const todayOrders  = STATE.bills.filter(b=>b.status==='paid').length;
+
+  const tbody = document.getElementById('revenueHistoryTable');
+  const empty = document.getElementById('revenueHistoryEmpty');
+  if (!tbody) return;
+
+  // Hôm nay (thực tế)
+  const rows = [{date:todayStr(), revenue:todayRevenue, orders:todayOrders, isToday:true}, ...history];
+
+  if (rows.length === 0 || (rows.length === 1 && rows[0].revenue === 0 && rows[0].orders === 0)) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const maxRev = Math.max(...rows.map(r=>r.revenue), 1);
+  tbody.innerHTML = rows.map(r => {
+    const avg = r.orders > 0 ? Math.round(r.revenue / r.orders) : 0;
+    const pct = Math.round(r.revenue / maxRev * 100);
+    const dateLabel = r.isToday ? `<b style="color:var(--gold)">${r.date} (Hôm nay)</b>` : r.date;
+    return `<tr>
+      <td>${dateLabel}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:80px;height:5px;background:var(--surf3);border-radius:3px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${r.isToday?'var(--gold)':'var(--blu)'};border-radius:3px"></div>
+          </div>
+          <b style="color:${r.isToday?'var(--gold)':'var(--txt)'}">${r.revenue.toLocaleString('vi-VN')}₫</b>
+        </div>
+      </td>
+      <td>${r.orders} HĐ</td>
+      <td style="color:var(--txt2)">${avg > 0 ? avg.toLocaleString('vi-VN')+'₫' : '—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   TABLE MAP + DRAG & DROP
+═══════════════════════════════════════════════════════ */
+let dragSrc = null;
+
+function renderTableMap() {
+  const canvas = document.getElementById('tableCanvas');
+  canvas.innerHTML = STATE.tables.map(t => {
+    const total = getTableTotal(t);
+    const elapsed = t.checkin ? getElapsed(t.checkin) : '';
+    return `<div class="t-item ${t.status}" id="ti-${t.id}"
+      draggable="true"
+      onclick="openTablePopup(${t.id})"
+      ondblclick="cycleTableStatus(${t.id},event)"
+      ondragstart="dragStart(event,${t.id})"
+      ondragend="dragEnd(event)"
+      ondragover="dragOver(event)"
+      ondrop="dropTable(event,${t.id})"
+      title="Double-click đổi trạng thái · Kéo để di chuyển">
+      <span class="t-drag-handle">⠿</span>
+      ${t.guests > 0 ? `<span class="t-guests">👥${t.guests}</span>` : ''}
+      <div class="t-num">${t.id}</div>
+      <div class="t-status">${{free:'Trống',occupied:'Đang dùng',reserved:'Đặt trước',cleaning:'Đang dọn'}[t.status]}</div>
+      ${elapsed ? `<div class="t-time">⏱ ${elapsed}</div>` : ''}
+      ${total > 0 ? `<div class="t-amount">${fmt(total)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function getElapsed(checkin) {
+  const [h,m] = checkin.split(':').map(Number);
+  const now = new Date();
+  const diff = (now.getHours()*60+now.getMinutes()) - (h*60+m);
+  if (diff < 0) return '';
+  if (diff < 60) return `${diff}ph`;
+  return `${Math.floor(diff/60)}h${diff%60}ph`;
+}
+
+function cycleTableStatus(id, e) {
+  e.stopPropagation();
+  const t = tableById(id);
+  const cycle = {free:'occupied', occupied:'cleaning', cleaning:'free', reserved:'occupied'};
+  t.status = cycle[t.status];
+  if (t.status === 'occupied' && !t.checkin) t.checkin = new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  if (t.status === 'free') { t.guests = 0; t.checkin = null; t.order = []; }
+  renderTableMap();
+  updateDashboardStats();
+  updateSidebarBadges();
+  broadcast('TABLE_UPDATE', STATE.tables);
+  showToast(`Bàn ${id} → ${{free:'Trống',occupied:'Đang dùng',cleaning:'Đang dọn'}[t.status]}`, 'i');
+}
+
+// Drag & Drop
+function dragStart(e, id) {
+  dragSrc = id;
+  setTimeout(() => document.getElementById('ti-' + id)?.classList.add('dragging'), 0);
+  e.dataTransfer.effectAllowed = 'move';
+}
+function dragEnd(e) {
+  document.querySelectorAll('.t-item').forEach(el => {
+    el.classList.remove('dragging','drag-over');
+  });
+}
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function dropTable(e, targetId) {
+  e.preventDefault();
+  if (dragSrc === targetId) return;
+  const srcIdx = STATE.tables.findIndex(t => t.id === dragSrc);
+  const dstIdx = STATE.tables.findIndex(t => t.id === targetId);
+  [STATE.tables[srcIdx], STATE.tables[dstIdx]] = [STATE.tables[dstIdx], STATE.tables[srcIdx]];
+  renderTableMap();
+  broadcast('TABLE_UPDATE', STATE.tables);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TABLE POPUP
+═══════════════════════════════════════════════════════ */
+function openTablePopup(id) {
+  STATE.activeTablePopup = id;
+  const t = tableById(id);
+  document.getElementById('tp-title').innerHTML = `<span class="editable" onclick="inlineEdit(this,'tableNum${id}','table',${id})">Bàn ${id}</span>`;
+  document.getElementById('tp-status-lbl').textContent = `${t.guests > 0 ? `${t.guests} khách · ` : ''}${t.checkin ? `Vào ${t.checkin}` : 'Chưa có khách'}`;
+  document.getElementById('tp-status-sel').value = t.status;
+  renderTablePopupItems(t);
+  renderTablePopupQuickAdd();
+  document.getElementById('tablePopup').classList.add('open');
+}
+
+function closeTablePopup() {
+  document.getElementById('tablePopup').classList.remove('open');
+  STATE.activeTablePopup = null;
+}
+
+function renderTablePopupItems(t) {
+  const items = t.order;
+  if (!items.length) {
+    document.getElementById('tp-items').innerHTML = '<div style="text-align:center;padding:16px;color:var(--txt3);font-size:12px">Chưa có món nào · Thêm từ menu bên dưới</div>';
+    document.getElementById('tp-subtotal').textContent = '0₫';
+    document.getElementById('tp-total').textContent = '0₫';
+    return;
+  }
+  document.getElementById('tp-items').innerHTML = items.map(i => {
+    const m = menuById(i.id);
+    if (!m) return '';
+    return `<div class="ci">
+      <span class="ci-emoji">${m.emoji}</span>
+      <div class="ci-name"><span class="editable" onclick="inlineEdit(this,'itemName${m.id}','menuName',${m.id})">${m.name}</span></div>
+      <div class="ci-qty-wrap">
+        <button class="qbtn" onclick="changeTableOrderQty(${t.id},${m.id},-1)">−</button>
+        <input class="ci-qty-inp" type="number" value="${i.qty}" min="0"
+          onchange="setTableOrderQty(${t.id},${m.id},this.value)"
+          onclick="this.select()">
+        <button class="qbtn" onclick="changeTableOrderQty(${t.id},${m.id},1)">+</button>
+      </div>
+      <div class="ci-price"><span class="editable" onclick="inlineEdit(this,'itemPrice${m.id}','menuPrice',${m.id})">${fmt(m.price * i.qty)}</span></div>
+      <button class="ci-del" onclick="removeTableOrderItem(${t.id},${m.id})">✕</button>
+    </div>`;
+  }).join('');
+
+  const sub = getTableTotal(t);
+  const total = Math.round(sub * 1.1);
+  document.getElementById('tp-subtotal').textContent = fmt(sub);
+  document.getElementById('tp-total').textContent = fmt(total);
+}
+
+function renderTablePopupQuickAdd() {
+  const popular = STATE.menu.filter(m => m.stock > 0).slice(0,6);
+  document.getElementById('tp-quick-add').innerHTML = popular.map(m =>
+    `<button class="btn btn-ghost btn-sm" onclick="addToTableOrder(${STATE.activeTablePopup},${m.id})" style="font-size:11px;justify-content:flex-start">
+      ${m.emoji} ${m.name.substring(0,18)}
+    </button>`).join('');
+}
+
+function addToTableOrder(tableId, menuId) {
+  const t = tableById(tableId);
+  const m = menuById(menuId);
+  if (!t || !m) return;
+  if (m.stock <= 0) { showToast(`${m.name} đã hết hàng!`, 'e'); return; }
+  const existing = t.order.find(i => i.id === menuId);
+  if (existing) { existing.qty++; }
+  else { t.order.push({id:menuId, qty:1}); }
+  m.stock--;
+  if (t.status === 'free') { t.status = 'occupied'; t.checkin = new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}); }
+  renderTablePopupItems(t);
+  renderTableMap();
+  updateDashboardStats();
+  renderInventoryBadge();
+  broadcast('TABLE_UPDATE', STATE.tables);
+  showToast(`+1 ${m.emoji} ${m.name} → Bàn ${tableId}`, 's');
+}
+
+function changeTableOrderQty(tableId, menuId, delta) {
+  const t = tableById(tableId);
+  const item = t.order.find(i => i.id === menuId);
+  if (!item) return;
+  item.qty = Math.max(0, item.qty + delta);
+  if (item.qty === 0) t.order = t.order.filter(i => i.id !== menuId);
+  renderTablePopupItems(t);
+  renderTableMap();
+  broadcast('TABLE_UPDATE', STATE.tables);
+}
+
+function setTableOrderQty(tableId, menuId, val) {
+  const t = tableById(tableId);
+  const item = t.order.find(i => i.id === menuId);
+  if (!item) return;
+  item.qty = Math.max(0, parseInt(val) || 0);
+  if (item.qty === 0) t.order = t.order.filter(i => i.id !== menuId);
+  renderTablePopupItems(t);
+  renderTableMap();
+  broadcast('TABLE_UPDATE', STATE.tables);
+}
+
+function removeTableOrderItem(tableId, menuId) {
+  const t = tableById(tableId);
+  t.order = t.order.filter(i => i.id !== menuId);
+  renderTablePopupItems(t);
+  renderTableMap();
+  broadcast('TABLE_UPDATE', STATE.tables);
+}
+
+function clearTableOrder() {
+  const t = tableById(STATE.activeTablePopup);
+  t.order = [];
+  renderTablePopupItems(t);
+  renderTableMap();
+  broadcast('TABLE_UPDATE', STATE.tables);
+}
+
+function changeTableStatus() {
+  const id = STATE.activeTablePopup;
+  const t = tableById(id);
+  t.status = document.getElementById('tp-status-sel').value;
+  if (t.status === 'occupied' && !t.checkin) t.checkin = new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  if (t.status === 'free') { t.guests = 0; t.checkin = null; }
+  renderTableMap();
+  updateDashboardStats();
+  updateSidebarBadges();
+  broadcast('TABLE_UPDATE', STATE.tables);
+  showToast(`Bàn ${id} → ${t.status}`, 'i');
+}
+
+function checkoutTable() {
+  const t = tableById(STATE.activeTablePopup);
+  const total = getTableTotal(t);
+  if (total === 0) { showToast('Bàn này chưa có order', 'e'); return; }
+  const grand = Math.round(total * 1.1);
+  const method = prompt(`💳 Thanh toán Bàn ${t.id}\nTổng: ${fmt(grand)}\n\nPhương thức (1: Tiền mặt, 2: Chuyển khoản, 3: Thẻ):\n`,'1');
+  if (!method) return;
+  const pays = {1:'Tiền mặt',2:'Chuyển khoản',3:'Thẻ'};
+  const billId = `#${800 + STATE.bills.length + 1}`;
+  STATE.bills.unshift({id:billId,table:`Bàn ${t.id}`,checkin:t.checkin,total:grand,pay:pays[method]||'Tiền mặt',staff:'Admin',status:'paid'});
+  t.status = 'cleaning'; t.order = []; t.guests = 0; t.checkin = null;
+  closeTablePopup();
+  renderTableMap();
+  updateDashboardStats();
+  broadcast('TABLE_UPDATE', STATE.tables);
+  saveState();
+  showToast(`✅ Thanh toán bàn ${t.id} – ${fmt(grand)}`, 's');
+  setTimeout(() => printBill(billId, t.id, grand, pays[method]), 500);
+}
+
+/* ═══════════════════════════════════════════════════════
+   INLINE EDITING
+═══════════════════════════════════════════════════════ */
+function inlineEdit(el, key, type, id) {
+  if (el.querySelector('input')) return;
+  const original = el.textContent;
+  const inp = document.createElement('input');
+  inp.className = 'inline-edit-inp';
+  inp.value = type === 'menuPrice' ? menuById(id)?.price : original.replace(/[^\d]/g,'') || original;
+  inp.style.fontSize = window.getComputedStyle(el).fontSize;
+  el.textContent = '';
+  el.appendChild(inp);
+  inp.focus(); inp.select();
+
+  const save = () => {
+    const val = inp.value.trim();
+    if (!val) { el.textContent = original; return; }
+    if (type === 'menuName') {
+      const m = menuById(id);
+      if (m) { m.name = val; el.textContent = val; broadcast('MENU_UPDATE', STATE.menu); showToast(`Đã đổi tên → ${val}`, 'i'); }
+    } else if (type === 'menuPrice') {
+      const m = menuById(id);
+      if (m) { m.price = parseInt(val); el.textContent = fmt(m.price); broadcast('MENU_UPDATE', STATE.menu); showToast(`Đã đổi giá → ${fmt(m.price)}`, 'i'); }
+    } else {
+      el.textContent = val;
+    }
+    if (type === 'menuName' || type === 'menuPrice') {
+      renderMenuManageTable();
+      renderMenuGrid();
+      if (STATE.activeTablePopup) renderTablePopupItems(tableById(STATE.activeTablePopup));
+    }
+  };
+
+  inp.addEventListener('blur', save);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { save(); inp.blur(); }
+    if (e.key === 'Escape') { el.textContent = original; }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   MENU & CART
+═══════════════════════════════════════════════════════ */
+function initCatTabs() {
+  const cats = ['all','bia','nuong','lau','snack','khac'];
+  document.getElementById('catTabs').innerHTML = cats.map(c =>
+    `<button class="cat-tab ${c==='all'?'active':''}" onclick="filterCat(this,'${c}')">${catNames[c]}</button>`
+  ).join('');
+}
+
+function filterCat(el, cat) {
+  STATE.catFilter = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderMenuGrid();
+}
+
+function renderMenuGrid() {
+  const search = document.getElementById('menuSearch')?.value.toLowerCase() || '';
+  let items = STATE.menu;
+  if (STATE.catFilter !== 'all') items = items.filter(m => m.cat === STATE.catFilter);
+  if (search) items = items.filter(m => m.name.toLowerCase().includes(search));
+  document.getElementById('menuGrid').innerHTML = items.map(m =>
+    `<div class="m-item ${m.stock === 0 ? 'out-of-stock' : ''}" onclick="addToCart(${m.id})">
+      <span class="m-emoji">${m.emoji}</span>
+      <div class="m-name">${m.name}</div>
+      <div class="m-price">${fmt(m.price)}</div>
+      <div class="m-stock">Kho: ${m.stock} ${m.unit}</div>
+    </div>`).join('');
+  renderRecommendations();
+}
+
+function addToCart(id) {
+  const m = menuById(id);
+  if (!m || m.stock <= 0) { showToast(`${m?.name || ''} đã hết hàng!`, 'e'); return; }
+  const existing = STATE.cart.find(c => c.id === id);
+  if (existing) { existing.qty++; }
+  else { STATE.cart.push({id, qty:1}); }
+  m.stock--;
+  renderCart();
+  renderMenuGrid();
+  renderInventoryBadge();
+  broadcast('ORDER_UPDATE', {cart: STATE.cart, table: STATE.activeCartTable});
+  showToast(`+1 ${m.emoji} ${m.name}`, 's');
+}
+
+function renderCart() {
+  const cartEl = document.getElementById('cartItems');
+  const footEl = document.getElementById('cartFoot');
+  if (!STATE.cart.length) {
+    cartEl.innerHTML = '<div style="text-align:center;padding:28px 0;color:var(--txt3);font-size:13px">Chọn món để bắt đầu</div>';
+    footEl.style.display = 'none';
+    return;
+  }
+  cartEl.innerHTML = STATE.cart.map(c => {
+    const m = menuById(c.id);
+    if (!m) return '';
+    return `<div class="ci">
+      <span class="ci-emoji">${m.emoji}</span>
+      <div class="ci-name">${m.name}</div>
+      <div class="ci-qty-wrap">
+        <button class="qbtn" onclick="cartQty(${m.id},-1)">−</button>
+        <input class="ci-qty-inp" type="number" value="${c.qty}" min="0"
+          onchange="setCartQty(${m.id},this.value)" onclick="this.select()">
+        <button class="qbtn" onclick="cartQty(${m.id},1)">+</button>
+      </div>
+      <div class="ci-price">${fmt(m.price * c.qty)}</div>
+      <button class="ci-del" onclick="cartRemove(${m.id})">✕</button>
+    </div>`;
+  }).join('');
+
+  const sub = STATE.cart.reduce((s,c) => { const m = menuById(c.id); return s + (m ? m.price*c.qty : 0); }, 0);
+  const vat = Math.round(sub * 0.1);
+  const disc = 0;
+  document.getElementById('cf-sub').textContent = fmt(sub);
+  document.getElementById('cf-vat').textContent = fmt(vat);
+  document.getElementById('cf-disc').textContent = fmt(disc);
+  document.getElementById('cf-total').textContent = fmt(sub + vat - disc);
+  footEl.style.display = 'block';
+}
+
+function cartQty(id, delta) {
+  const i = STATE.cart.findIndex(c => c.id === id);
+  if (i === -1) return;
+  STATE.cart[i].qty = Math.max(0, STATE.cart[i].qty + delta);
+  if (STATE.cart[i].qty === 0) STATE.cart.splice(i, 1);
+  renderCart();
+  broadcast('ORDER_UPDATE', {cart: STATE.cart, table: STATE.activeCartTable});
+}
+
+function setCartQty(id, val) {
+  const i = STATE.cart.findIndex(c => c.id === id);
+  if (i === -1) return;
+  STATE.cart[i].qty = Math.max(0, parseInt(val) || 0);
+  if (STATE.cart[i].qty === 0) STATE.cart.splice(i, 1);
+  renderCart();
+  broadcast('ORDER_UPDATE', {cart: STATE.cart, table: STATE.activeCartTable});
+}
+
+function cartRemove(id) {
+  STATE.cart = STATE.cart.filter(c => c.id !== id);
+  renderCart();
+  broadcast('ORDER_UPDATE', {cart: STATE.cart, table: STATE.activeCartTable});
+}
+
+function clearCart() { STATE.cart = []; renderCart(); renderMenuGrid(); }
+
+function confirmOrder() {
+  if (!STATE.cart.length) return;
+  const tId = parseInt(document.getElementById('cartTableSel')?.value) || STATE.tables[0].id;
+  const t = tableById(tId);
+  // Merge cart into table order
+  STATE.cart.forEach(ci => {
+    const existing = t.order.find(i => i.id === ci.id);
+    if (existing) { existing.qty += ci.qty; }
+    else { t.order.push({id:ci.id, qty:ci.qty}); }
+  });
+  if (t.status === 'free') { t.status = 'occupied'; t.checkin = new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}); }
+  // Add to kitchen
+  const kitchenItem = {tableId:tId, items:[...STATE.cart], time: new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})};
+  kitchenQueue.push(kitchenItem);
+  STATE.cart = [];
+  renderCart();
+  renderMenuGrid();
+  renderTableMap();
+  renderKitchenQueue();
+  updateDashboardStats();
+  broadcast('TABLE_UPDATE', STATE.tables);
+  saveState();
+  showToast(`✅ Đã gửi bếp! Bàn ${tId} – ${kitchenItem.items.length} món`, 's');
+}
+
+function renderCartTableOptions() {
+  const sel = document.getElementById('cartTableSel');
+  if (!sel) return;
+  sel.innerHTML = STATE.tables.map(t =>
+    `<option value="${t.id}">Bàn ${t.id} ${t.status === 'occupied' ? '●' : ''}</option>`
+  ).join('');
+}
+
+function updateCartLabel() {
+  STATE.activeCartTable = parseInt(document.getElementById('cartTableSel')?.value);
+}
+
+// Kitchen queue
+let kitchenQueue = [
+  {tableId:5, items:[{id:5,qty:1},{id:1,qty:4}], time:'18:12', elapsed:12},
+  {tableId:8, items:[{id:6,qty:2},{id:11,qty:2}], time:'17:58', elapsed:27},
+];
+
+function renderKitchenQueue() {
+  const el = document.getElementById('kitchenQueue');
+  if (!kitchenQueue.length) { el.innerHTML = '<div style="padding:14px;text-align:center;color:var(--txt3);font-size:12px">Không có order đang chờ</div>'; return; }
+  el.innerHTML = kitchenQueue.map((k,i) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:13px;font-weight:700">Bàn ${k.tableId} · ${k.time}</div>
+        <div style="font-size:11px;color:var(--txt3)">${k.items.map(it=>{const m=menuById(it.id);return m?`${m.emoji}x${it.qty}`:''}).join('  ')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge ${(k.elapsed||0) > 20 ? 'badge-red' : 'badge-gold'}">${k.elapsed ? k.elapsed+'ph' : 'mới'}</span>
+        <button class="btn btn-grn btn-xs" onclick="doneKitchen(${i})">✓ Xong</button>
+      </div>
+    </div>`).join('');
+}
+
+function doneKitchen(i) {
+  kitchenQueue.splice(i,1);
+  renderKitchenQueue();
+  showToast('Món đã phục vụ!', 's');
+}
+
+/* ═══════════════════════════════════════════════════════
+   RECOMMENDATIONS (AI-like)
+═══════════════════════════════════════════════════════ */
+const combos = {
+  bia: [5, 11, 12],   // bia → tôm nướng, lạc, bắp
+  nuong: [1, 2, 13],  // nướng → bia, rau
+  lau: [1, 13, 4],    // lẩu → bia, rau, nước
+  snack: [1, 2],
+  khac: [1, 13],
+};
+
+function renderRecommendations() {
+  const el = document.getElementById('recChips');
+  if (!el) return;
+  const cartCats = [...new Set(STATE.cart.map(c => menuById(c.id)?.cat).filter(Boolean))];
+  const cartIds = STATE.cart.map(c => c.id);
+
+  let suggested = [];
+  cartCats.forEach(cat => {
+    (combos[cat] || []).forEach(id => {
+      if (!cartIds.includes(id) && !suggested.includes(id)) suggested.push(id);
+    });
+  });
+
+  if (!suggested.length) {
+    // Default popular
+    suggested = [1,5,11,6].filter(id => !cartIds.includes(id));
+  }
+
+  el.innerHTML = suggested.slice(0,5).map(id => {
+    const m = menuById(id);
+    if (!m || m.stock === 0) return '';
+    return `<div class="rec-chip" onclick="addToCart(${m.id})">
+      ${m.emoji} ${m.name} <span style="opacity:.6">+</span>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   MENU MANAGEMENT
+═══════════════════════════════════════════════════════ */
+function renderMenuManageTable() {
+  document.getElementById('menuManageTable').innerHTML = STATE.menu.map(m => {
+    const margin = Math.round((m.price-m.cost)/m.price*100);
+    return `<tr>
+      <td>
+        <span style="font-size:16px;margin-right:6px">${m.emoji}</span>
+        <span class="editable" onclick="inlineEdit(this,'mn${m.id}','menuName',${m.id})">${m.name}</span>
+      </td>
+      <td><span class="badge ${m.cat==='bia'?'badge-gold':m.cat==='nuong'||m.cat==='lau'?'badge-blu':'badge-gray'}">${catNames[m.cat]||m.cat}</span></td>
+      <td><span class="editable" style="font-weight:700;color:var(--gold)" onclick="inlineEdit(this,'mp${m.id}','menuPrice',${m.id})">${fmt(m.price)}</span></td>
+      <td>${fmt(m.cost)}</td>
+      <td>${m.stock > 0 ? `<span style="color:var(--grn)">${m.stock}</span>` : '<span style="color:var(--red)">Hết</span>'}</td>
+      <td><span class="badge ${m.stock>0?'badge-grn':'badge-red'}">${m.stock>0?'Còn hàng':'Hết hàng'}</span></td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-xs" onclick="showToast('Sửa trực tiếp tên/giá bằng cách click vào chúng','i')">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="removeMenuItem(${m.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function addMenuItem() {
+  const emoji = document.getElementById('nm-emoji').value || '🍽️';
+  const name = document.getElementById('nm-name').value.trim();
+  const cat = document.getElementById('nm-cat').value;
+  const unit = document.getElementById('nm-unit').value || 'Đĩa';
+  const price = parseInt(document.getElementById('nm-price').value) || 0;
+  const cost = parseInt(document.getElementById('nm-cost').value) || 0;
+  const stock = parseInt(document.getElementById('nm-stock').value) || 0;
+  if (!name || !price) { showToast('Nhập đầy đủ tên và giá', 'e'); return; }
+  const newId = Math.max(...STATE.menu.map(m => m.id)) + 1;
+  STATE.menu.push({id:newId,emoji,name,cat,price,cost,unit,stock,sold:0});
+  closeModal('addMenuModal');
+  renderMenuManageTable();
+  renderMenuGrid();
+  broadcast('MENU_UPDATE', STATE.menu);
+  saveState();
+  showToast(`Đã thêm: ${emoji} ${name}`, 's');
+}
+
+function removeMenuItem(id) {
+  const m = menuById(id);
+  if (!confirm(`Xoá món "${m?.name}"?`)) return;
+  STATE.menu = STATE.menu.filter(m => m.id !== id);
+  renderMenuManageTable();
+  renderMenuGrid();
+  broadcast('MENU_UPDATE', STATE.menu);
+  showToast('Đã xoá món', 'i');
+}
+
+/* ═══════════════════════════════════════════════════════
+   INVENTORY
+═══════════════════════════════════════════════════════ */
+function renderInventory() {
+  const ok = STATE.inventory.filter(i => i.qty >= i.min).length;
+  const low = STATE.inventory.filter(i => i.qty > 0 && i.qty < i.min).length;
+  const out = STATE.inventory.filter(i => i.qty === 0).length;
+  document.getElementById('inv-ok').textContent = ok;
+  document.getElementById('inv-low').textContent = low;
+  document.getElementById('inv-out').textContent = out;
+
+  document.getElementById('invTable').innerHTML = STATE.inventory.map((item,idx) => {
+    const pct = Math.min(100, Math.round(item.qty / item.max * 100));
+    const cls = item.qty === 0 ? 'lo' : item.qty < item.min ? 'md' : 'hi';
+    const badge = item.qty === 0 ? 'badge-red' : item.qty < item.min ? 'badge-gold' : 'badge-grn';
+    const label = item.qty === 0 ? '❌ Hết' : item.qty < item.min ? '⚠️ Thấp' : '✅ Đủ';
+    return `<tr>
+      <td><b class="editable" onclick="inlineEditInv(this,${idx},'name')">${item.name}</b></td>
+      <td>${item.unit}</td>
+      <td>
+        <b class="editable" onclick="inlineEditInv(this,${idx},'qty')" style="font-size:15px">${item.qty}</b>
+        <div class="inv-bar-wrap" style="display:inline-block;margin-left:8px;vertical-align:middle">
+          <div class="inv-bar ${cls}" style="width:${pct}%"></div>
+        </div>
+      </td>
+      <td>${item.min} ${item.unit}</td>
+      <td><span class="badge ${badge}">${label}</span></td>
+      <td>
+        <button class="btn btn-ghost btn-xs" onclick="stockIn(${idx})">📥 Nhập</button>
+      </td>
+    </tr>`;
+  }).join('');
+  renderInventoryBadge();
+}
+
+function inlineEditInv(el, idx, field) {
+  if (el.querySelector('input')) return;
+  const original = el.textContent;
+  const inp = document.createElement('input');
+  inp.className = 'inline-edit-inp';
+  inp.value = original;
+  inp.style.fontSize = window.getComputedStyle(el).fontSize;
+  el.textContent = '';
+  el.appendChild(inp);
+  inp.focus(); inp.select();
+  const save = () => {
+    const val = inp.value.trim();
+    if (!val) { el.textContent = original; return; }
+    if (field === 'qty') STATE.inventory[idx].qty = parseInt(val) || 0;
+    else STATE.inventory[idx][field] = val;
+    renderInventory();
+    broadcast('INVENTORY_UPDATE', STATE.inventory);
+  };
+  inp.addEventListener('blur', save);
+  inp.addEventListener('keydown', e => { if(e.key==='Enter'){save();inp.blur();} if(e.key==='Escape'){el.textContent=original;} });
+}
+
+function stockIn(idx) {
+  const amt = parseInt(prompt(`Nhập thêm ${STATE.inventory[idx].name} (${STATE.inventory[idx].unit}):`) || '0');
+  if (amt <= 0) return;
+  STATE.inventory[idx].qty += amt;
+  renderInventory();
+  broadcast('INVENTORY_UPDATE', STATE.inventory);
+  showToast(`Nhập kho: +${amt} ${STATE.inventory[idx].unit} ${STATE.inventory[idx].name}`, 's');
+}
+
+function addInventoryItem() {
+  const name = document.getElementById('inv-name').value.trim();
+  const unit = document.getElementById('inv-unit').value.trim();
+  const qty = parseInt(document.getElementById('inv-qty').value) || 0;
+  const min = parseInt(document.getElementById('inv-min').value) || 5;
+  if (!name) { showToast('Nhập tên nguyên liệu', 'e'); return; }
+  STATE.inventory.push({name,unit,qty,min,max:qty*2||100});
+  closeModal('addInvModal');
+  renderInventory();
+  broadcast('INVENTORY_UPDATE', STATE.inventory);
+  saveState();
+  showToast(`Đã thêm: ${name}`, 's');
+}
+
+function renderInventoryBadge() {
+  const low = STATE.inventory.filter(i => i.qty < i.min).length;
+  const badge = document.getElementById('nb-inv');
+  if (low > 0) { badge.style.display = ''; badge.textContent = low + '⚠'; }
+  else badge.style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESERVATIONS
+═══════════════════════════════════════════════════════ */
+function renderReservations() {
+  const statusMap = {confirmed:'Đã xác nhận',pending:'Chờ xác nhận',cancelled:'Đã hủy'};
+  document.getElementById('resTimeline').innerHTML = STATE.reservations.map(r => `
+    <div class="res-card ${r.status}">
+      <div style="display:flex;gap:14px;align-items:center;flex:1">
+        <div style="width:44px;height:44px;border-radius:10px;background:var(--surf3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📅</div>
+        <div>
+          <div class="res-info-name">${r.name}</div>
+          <div class="res-info-detail">${r.phone} · Bàn ${r.table} · ${r.guests} người · ${r.date} ${r.time}</div>
+          ${r.note ? `<div style="font-size:11px;color:var(--txt3);margin-top:2px">📝 ${r.note}</div>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="badge ${r.status==='confirmed'?'badge-grn':r.status==='pending'?'badge-gold':'badge-red'}">${statusMap[r.status]}</span>
+        ${r.status === 'pending' ? `<button class="btn btn-grn btn-sm" onclick="confirmRes(${r.id})">✅</button>` : ''}
+        <button class="btn btn-red btn-sm" onclick="cancelRes(${r.id})">✕</button>
+      </div>
+    </div>`).join('');
+  updateResBadge();
+}
+
+function addReservation() {
+  const name = document.getElementById('res-name').value.trim();
+  const phone = document.getElementById('res-phone').value.trim();
+  const date = document.getElementById('res-date').value;
+  const time = document.getElementById('res-time').value;
+  const guests = parseInt(document.getElementById('res-guests').value) || 2;
+  const tableEl = document.getElementById('res-table');
+  const note = document.getElementById('res-note').value.trim();
+  if (!name || !phone) { showToast('Nhập tên và SĐT', 'e'); return; }
+  const newId = Math.max(0,...STATE.reservations.map(r=>r.id)) + 1;
+  STATE.reservations.push({id:newId, name, phone, table:parseInt(tableEl.value)||1, guests, date, time, note, status:'pending'});
+  closeModal('resModal');
+  renderReservations();
+  saveState();
+  showToast(`📅 Đặt bàn cho ${name} lúc ${time}`, 's');
+}
+
+function confirmRes(id) {
+  const r = STATE.reservations.find(r => r.id === id);
+  if (r) { r.status = 'confirmed'; renderReservations(); showToast('Đã xác nhận đặt bàn', 's'); }
+}
+
+function cancelRes(id) {
+  STATE.reservations = STATE.reservations.filter(r => r.id !== id);
+  renderReservations();
+  showToast('Đã xoá đặt bàn', 'i');
+}
+
+function updateResBadge() {
+  const pending = STATE.reservations.filter(r => r.status === 'pending').length;
+  document.getElementById('nb-res').textContent = pending;
+}
+
+function populateResTables() {
+  const sel = document.getElementById('res-table');
+  if (!sel) return;
+  sel.innerHTML = STATE.tables.filter(t => t.status === 'free' || t.status === 'reserved').map(t =>
+    `<option value="${t.id}">Bàn ${t.id} (${t.status === 'free' ? 'Trống' : 'Đặt trước'})</option>`
+  ).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   BILLS
+═══════════════════════════════════════════════════════ */
+function renderBills() {
+  document.getElementById('billsTable').innerHTML = STATE.bills.map(b => `
+    <tr>
+      <td><b style="color:var(--gold)">${b.id}</b></td>
+      <td>${b.table}</td>
+      <td>${b.checkin || '—'}</td>
+      <td style="font-weight:700">${b.total ? fmt(b.total) : '<span style="color:var(--txt3)">—</span>'}</td>
+      <td><span class="badge ${b.pay==='Tiền mặt'?'badge-gold':'badge-blu'}">${b.pay}</span></td>
+      <td>${b.staff}</td>
+      <td><span class="badge ${b.status==='paid'?'badge-grn':'badge-gold'}">${b.status==='paid'?'✅ Đã TT':'⏳ Chờ'}</span></td>
+      <td><button class="btn btn-ghost btn-xs" onclick="printBill('${b.id}',${b.table?.replace(/\D/g,'')},${b.total},'${b.pay}')">🖨️</button></td>
+    </tr>`).join('');
+}
+
+function printBill(id, tableId, total, pay) {
+  const div = document.getElementById('printBill');
+  div.innerHTML = `
+    <div class="print-title">🍺 BIA HƠI 99</div>
+    <div class="print-sub">123 Đường Nhậu, Q.1, TP.HCM · 0900 000 000</div>
+    <div class="print-hr"></div>
+    <div class="print-row"><span>Hóa đơn:</span><span>${id}</span></div>
+    <div class="print-row"><span>Bàn:</span><span>${tableId}</span></div>
+    <div class="print-row"><span>Thời gian:</span><span>${new Date().toLocaleString('vi-VN')}</span></div>
+    <div class="print-hr"></div>
+    <div class="print-row print-total"><span>TỔNG CỘNG:</span><span>${fmt(total||0)}</span></div>
+    <div class="print-row"><span>Thanh toán:</span><span>${pay}</span></div>
+    <div class="print-hr"></div>
+    <div style="text-align:center;font-size:12px">Cảm ơn quý khách! Hẹn gặp lại 🍺</div>
+  `;
+  window.print();
+}
+
+/* ═══════════════════════════════════════════════════════
+   STAFF
+═══════════════════════════════════════════════════════ */
+function renderStaff() {
+  document.getElementById('staffTable').innerHTML = STATE.staff.map(s => `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold)">${s.name[0]}</div>
+        <b>${s.name}</b>
+      </div></td>
+      <td>${s.role}</td>
+      <td style="font-size:12px;color:var(--txt2)">${s.shift}</td>
+      <td><span class="${s.perm === 'admin' ? 'role-admin' : 'role-staff'}">${s.perm}</span></td>
+      <td><span class="badge ${s.status==='on'?'badge-grn':'badge-gray'}"><span class="dot"></span>${s.status==='on'?'Đang làm':'Nghỉ ca'}</span></td>
+      <td style="display:flex;gap:5px">
+        <button class="btn btn-ghost btn-xs" onclick="toggleStaff(${s.id})">🔄</button>
+        <button class="btn btn-red btn-xs" onclick="removeStaff(${s.id})">🗑️</button>
+      </td>
+    </tr>`).join('');
+}
+
+function addStaff() {
+  const name = document.getElementById('st-name').value.trim();
+  const phone = document.getElementById('st-phone').value.trim();
+  const role = document.getElementById('st-role').value;
+  const shift = document.getElementById('st-shift').value;
+  const perm = document.getElementById('st-perm').value;
+  if (!name) { showToast('Nhập tên nhân viên', 'e'); return; }
+  const newId = Math.max(...STATE.staff.map(s=>s.id)) + 1;
+  STATE.staff.push({id:newId,name,phone,role,shift,perm,status:'on'});
+  closeModal('addStaffModal');
+  renderStaff();
+  saveState();
+  showToast(`Đã thêm: ${name}`, 's');
+}
+
+function toggleStaff(id) {
+  const s = STATE.staff.find(s => s.id === id);
+  if (s) { s.status = s.status === 'on' ? 'off' : 'on'; renderStaff(); }
+}
+
+function removeStaff(id) {
+  const s = STATE.staff.find(s => s.id === id);
+  if (!confirm(`Xoá nhân viên "${s?.name}"?`)) return;
+  STATE.staff = STATE.staff.filter(s => s.id !== id);
+  renderStaff();
+  showToast('Đã xoá nhân viên', 'i');
+}
+
+/* ═══════════════════════════════════════════════════════
+   TABLE MANAGEMENT (add)
+═══════════════════════════════════════════════════════ */
+function addTable() {
+  const num = parseInt(document.getElementById('tb-num').value);
+  const cap = parseInt(document.getElementById('tb-cap').value) || 4;
+  const zone = document.getElementById('tb-zone').value;
+  if (!num || STATE.tables.find(t => t.id === num)) { showToast('Số bàn không hợp lệ hoặc đã tồn tại', 'e'); return; }
+  STATE.tables.push({id:num,status:'free',guests:0,checkin:null,order:[],zone});
+  STATE.tables.sort((a,b) => a.id-b.id);
+  closeModal('addTableModal');
+  renderTableMap();
+  updateDashboardStats();
+  broadcast('TABLE_UPDATE', STATE.tables);
+  saveState();
+  showToast(`Đã thêm Bàn ${num}`, 's');
+}
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR BADGES
+═══════════════════════════════════════════════════════ */
+function updateSidebarBadges() {
+  updateDashboardStats();
+  updateResBadge();
+  renderInventoryBadge();
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════════ */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'resModal') populateResTables();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-ov').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+function showToast(msg, type='i') {
+  const icons = {s:'✅',e:'❌',i:'💬',w:'🔔'};
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(() => el.style.opacity = '0', 2700);
+  setTimeout(() => el.remove(), 3000);
+}
+
+/* ═══════════════════════════════════════════════════════
+   AUTO-SIMULATE REALTIME UPDATES
+═══════════════════════════════════════════════════════ */
+setInterval(() => {
+  // Simulate kitchen elapsed time increment
+  kitchenQueue.forEach(k => { k.elapsed = (k.elapsed||0) + 1; });
+  if (document.getElementById('page-orders').classList.contains('active')) renderKitchenQueue();
+}, 60000);
+
+// Simulate incoming order notification every 90s
+setInterval(() => {
+  const msgs = ['Bàn mới vừa được mở','Order mới từ bàn ' + Math.ceil(Math.random()*10),'Khách đặt bàn mới qua điện thoại'];
+  showToast(msgs[Math.floor(Math.random()*msgs.length)], 'i');
+}, 90000);
+</script>
+</body>
+</html>
